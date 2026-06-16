@@ -1,0 +1,151 @@
+---
+title: Reading Backtest Results
+description: Every metric explained and what to look for
+---
+
+## The Shekel Score
+
+The **Shekel Score (0–100)** is the single answer to *"is this agent live-ready?"* It only appears on a [Rigorous (5×)](/backtesting/overview#rigorous-mode-5-range-report) set — it's a cross-run metric, so a single Explore backtest has no Shekel Score. You see it two places: a compact grade + number chip on the rigorous card, and the full breakdown at the top of the Range Report. One headline grade — **Robust / Solid / Risky / Fragile / Avoid**.
+
+It's deliberately tough and grades the **downside**, not the highlight reel:
+
+- **Realized only.** It scores your *banked* return, not open-position paper gains — a +900% headline that's mostly unrealized marks is exposure, not edge.
+- **Consistency is hard-weighted.** An agent profitable in only 3 of 5 runs is capped at "Risky" no matter how big the headline — a coin-flip in a costume isn't live-ready.
+- **Disqualifies blowups.** Any run that breached your max-drawdown cap or got liquidated shows **DQ** — because in real life you only run once.
+- **Big returns flatten.** Past ~+200% the curve barely moves (huge returns are usually luck or leverage), so a clean +150% can outscore a wild +900%.
+
+Next to the grade you always see **"% realized"** and **"X of 5 profitable"** — the two numbers a flashy headline hides.
+
+---
+
+## Headline Metrics
+
+### Total Return %
+The portfolio's percentage gain or loss over the full backtest period, starting from your configured initial capital.
+
+**What to look for:** Absolute return matters less than risk-adjusted return. A 30% return with a 40% max drawdown is worse than a 15% return with a 5% max drawdown.
+
+---
+
+### Sharpe Ratio
+Risk-adjusted return: how much return you're getting per unit of volatility.
+
+```
+Sharpe = (Portfolio Return - Risk-Free Rate) / Standard Deviation of Returns
+```
+
+| Sharpe | Interpretation |
+|---|---|
+| Below 0 | Negative risk-adjusted return — worse than cash |
+| 0 – 0.5 | Poor |
+| 0.5 – 1.0 | Acceptable |
+| 1.0 – 2.0 | Good |
+| Above 2.0 | Excellent |
+
+**What to look for:** > 1.0 is a useful bar for a strategy worth running live. Higher is better.
+
+---
+
+### Sortino Ratio
+Like Sharpe, but only penalizes **downside** volatility. Upside volatility (big wins) doesn't count against you.
+
+The Sortino is usually higher than the Sharpe. If your Sortino is much higher than your Sharpe, it means most of your volatility comes from large wins — a good sign.
+
+**What to look for:** Same interpretation as Sharpe, but use it alongside Sharpe rather than instead of it.
+
+---
+
+### Max Drawdown %
+The worst peak-to-trough portfolio decline during the backtest period.
+
+**Example:** If your portfolio peaked at $12,000 and later bottomed at $9,600 before recovering, your max drawdown was 20%.
+
+**What to look for:** Should be consistent with your configured Max Drawdown limit. If the backtest drawdown frequently exceeded your live drawdown limit, your live agent will pause often.
+
+---
+
+### Win Rate %
+Percentage of closed trades that were profitable.
+
+**Caution:** Win rate alone is misleading. A strategy with a 40% win rate can be very profitable if wins are 3x larger than losses. Always look at win rate alongside profit factor.
+
+---
+
+### Profit Factor
+Gross profit divided by gross loss across all closed trades.
+
+```
+Profit Factor = Total Winning Trade P&L / Total Losing Trade P&L
+```
+
+| Profit Factor | Interpretation |
+|---|---|
+| Below 1.0 | Losing strategy |
+| 1.0 – 1.5 | Marginal |
+| 1.5 – 2.0 | Healthy |
+| Above 2.0 | Strong |
+
+**What to look for:** > 1.5 is a practical threshold for a strategy worth running. > 2.0 is excellent.
+
+---
+
+## Equity Curve
+
+The equity curve plots your portfolio value over time. This is often more informative than any single metric.
+
+**What to look for:**
+- **Smooth upward slope** — consistent performance across the period
+- **Sharp drops followed by recovery** — high-volatility but mean-reverting; check your max drawdown tolerance
+- **Long flat periods** — the strategy sat out a lot; check if this aligns with your WAIT reasoning
+- **Consistent decline** — the strategy lost money steadily; the thesis may be wrong for this period
+
+---
+
+## Per-Token Breakdown
+
+Performance statistics for each individual token in your whitelist:
+
+- Win rate per token
+- Total P&L per token
+- Number of trades
+
+**What to look for:** Tokens where the agent consistently loses money are candidates to remove from your whitelist. Tokens with high win rates but few trades may need a longer backtest window.
+
+---
+
+## Trade Log
+
+The full list of every decision made during the backtest — including WAIT decisions. Each entry includes:
+
+- Timestamp
+- Token and direction
+- Entry and exit price
+- P&L on the trade
+- The AI's full reasoning at the time of the decision
+
+Reading through the reasoning on a few losing trades often reveals what the strategy is missing or getting wrong.
+
+---
+
+## Common Patterns
+
+<AccordionGroup>
+  <Accordion title="Backtest looks great, live performance is worse">
+    This is the most common divergence. Common causes:
+    - **Lookahead bias** — historical data sources may contain data that wasn't actually available at that timestamp
+    - **Slippage** — backtests execute at the historical price; live trades execute at the real bid/ask, which is worse
+    - **Regime change** — the backtest period was favorable; live conditions are different
+    - **Overfitting** — the strategy was implicitly tuned to work on that specific period
+    
+    Ask your agent in chat: *"Why do you think my live results differ from the backtest?"*
+  </Accordion>
+  <Accordion title="Low win rate but positive return">
+    Healthy for trend-following strategies. A 35% win rate with a 3:1 win/loss ratio is profitable. Check the profit factor — if it's above 1.5 alongside a low win rate, the strategy has a genuine edge.
+  </Accordion>
+  <Accordion title="High win rate but low return">
+    Often indicates cutting winners too early. The agent may be taking small profits while allowing losses to run. Look at the average winning vs. losing trade size in the trade log.
+  </Accordion>
+  <Accordion title="Strong early performance, weak later">
+    The strategy may have been fitted (even implicitly) to the market regime at the start of the test window. Try running the same strategy on a different time window to check robustness.
+  </Accordion>
+</AccordionGroup>

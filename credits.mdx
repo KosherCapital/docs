@@ -1,0 +1,84 @@
+---
+title: Credits
+description: How Shekel's credit system works
+---
+
+Credits are Shekel's unit of usage. Every agent run and chat message costs credits. You start with free credits and can earn more by verifying your phone or staking SHEKEL.
+
+<Note>
+Credits live in **one shared pool per account**, not per agent. Top up once and every agent you own draws from the same balance. Sign in with your wallet under **Settings → Account** to create (or find) your account — it automatically links the agents already on your device so they all share the pool.
+</Note>
+
+## Earning Credits
+
+| Source | Amount | How |
+|---|---|---|
+| Download the app | **200 cr** | Automatic on first open |
+| Verify phone number | **1,000 cr** | Account → Verify Phone Number |
+| Stake SHEKEL tokens | **Ongoing** | Proportional to your stake — see [Staking](/token/staking) |
+| Purchase | **Variable** | Buy Credits in the app |
+
+## Credit Costs
+
+### Live Agent
+Each time your agent runs and calls the AI model, it costs credits. The cost per run depends on:
+
+- **AI model** — Opus models cost more than Flash models
+- **Whitelist size** — more tokens = more data in the prompt = more tokens processed
+- **Data sources enabled** — each additional source adds context
+
+Higher-frequency schedules (every 15 min) multiply the per-run cost by how often the agent runs. A 15-min schedule runs ~96x per day vs. ~6x for a 4h schedule.
+
+### Chat Messages
+Each chat message costs credits based on the model:
+
+| Model | Cost per message |
+|---|---|
+| Grok Fast | 15 cr |
+| Grok 4.3 | 30 cr |
+| Claude Sonnet | 45 cr |
+| Claude Opus | 120 cr |
+
+### Backtests
+The credit estimate shown before running a backtest is a conservative pre-reservation based on expected token usage. Actual cost is settled after the run from real token counts, and **any over-reservation is refunded automatically**.
+
+Factors that increase backtest credit cost:
+- More tokens in your whitelist
+- Longer date range
+- More data sources enabled
+- Higher-cost AI model
+
+To minimize backtest cost: use a lighter model (DeepSeek Flash, Llama 3.3), narrow your whitelist, shorten the window, or disable unused data sources.
+
+### BYOK — Bring Your Own Key (60% off)
+
+If you have your own API key from a supported provider (**REI Labs, Anthropic, OpenAI**), plug it in under **Settings → Inference Provider**. With BYOK active, your credit cost drops by **60%** — you still pay the platform layer (data sources, infrastructure, surge capacity) but skip the inference markup, since you're covering that directly with your provider.
+
+The discount applies to backtests **and** live runs, and follows you everywhere you trigger a run — including from an MCP client like Claude. It's opt-in via Settings; it is **not** applied automatically.
+
+### MCP / external AI surfaces
+
+Talking to your agent from Claude/ChatGPT over [MCP](/chat/mcp) is mostly free, with a few metered tools:
+
+- **Chatting is free** — that conversation runs on your own Claude/ChatGPT, not on Shekel.
+- **Most read tools are free** — agent status, trades, performance, backtest history, reflections, notifications, decision history, basic HL state.
+- **Premium market-data tools** cost a small per-call fee: max pain (50), liquidations (20), open-interest history (15), ETF-flow sentiment (5). Fear & Greed and basic HL state stay free.
+- **Backtests, manual runs, and your live agent** bill at the normal credit rate (with the BYOK discount if enabled).
+
+## Checking Your Balance
+
+Go to **Account** → Credits balance is shown at the top of the screen.
+
+The balance is also shown in the left nav panel (tap the Shekel logo to open it).
+
+## Running Out of Credits
+
+Your live agent will **pause automatically** if your balance reaches zero. It will resume once credits are added. You'll receive a notification when the agent pauses for this reason.
+
+<Note>
+Open positions are not closed when the agent pauses due to depleted credits — they remain active on Hyperliquid and continue to be affected by market movement.
+</Note>
+
+## Buy Credits
+
+Tap **Buy Credits** in the left nav, or go to **Account → Buy Credits**. Credits settle on Base network and are available in your account within seconds.

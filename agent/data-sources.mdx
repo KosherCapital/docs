@@ -1,0 +1,303 @@
+---
+title: Data Sources
+description: Every market signal your agent can see — and the exact field names you can reference in your strategy
+---
+
+Each run, your agent receives a **live context package** before it makes a trading decision. You choose which sources go into that package under **Modify Agent → Data Sources**. The richer the context, the better the agent can reason — but premium sources cost extra credits, so turn on only what your strategy actually uses.
+
+<Note>
+Free sources are on by default. **Premium sources cost extra credits per ticker, per scheduled run** — the credit chip next to each toggle shows the price (e.g. `+10cr/ticker`). A run with four `+10` premiums on a 5-token whitelist adds `4 × 10 × 5 = 200` credits over the base model cost. Pay only for what you enable.
+</Note>
+
+## Sources at a glance
+
+| Source | Cost / ticker / run | Default | What it gives the agent |
+|---|---|---|---|
+| **Token Data** | Free | ON | Price, technicals, EMAs, swing structure (Hyperliquid) |
+| **Fear & Greed Index** | Free | ON | Macro sentiment regime (0–100) |
+| **Token Derivatives** | +15 cr | OFF | Per-perp OI, funding TWAPs, basis, mark/index spread |
+| **Sentiment** | +10 cr | ON | 12h macro + crypto news recap (Gloria AI) |
+| **Liquidation Data** | +20 cr | ON | Long/short ratio, liquidation flow, OI change (CoinGlass) |
+| **Smart Money** | +10 cr | ON | Whale positioning & notional flows by token |
+| **Futures/Options Signals** | +10 cr | ON | Derivatives directional bias + confidence (Athena AI) |
+| **Max Pain** | +50 cr | OFF | Institutional liquidation max-pain magnets (CoinGlass Pro) |
+| **ETF Flows** | +5 cr | ON | Daily net BTC + ETH spot-ETF flows (BTC/ETH only) |
+| **Custom Endpoint** | Free | — | Your own API → injected as a custom context block |
+
+<Tip>
+The agent reads your strategy as English narrative — it does **not** parse field paths automatically. To make it reason about a specific value, **name the field and explain how to read it** in your prompt (e.g. *"stand down when `adx.4h` < 20 — low-trend regime"*). The exact field names live in the [Data Points Reference](#data-points-reference) below.
+</Tip>
+
+---
+
+## Token Data — Free · ON
+
+Per-token live snapshot: price, order-book depth, funding rate, open interest, RSI, MACD, VWAP, Bollinger Bands, a full EMA grid, and swing structure — sourced directly from Hyperliquid.
+
+**How to leverage:** this is the bedrock context — leave it on unless you have a very good reason. Any strategy that mentions *RSI, MACD, VWAP, EMA distance,* or *order-book imbalance* relies on it. Without it your agent is flying blind on technicals.
+
+## Fear & Greed Index — Free · ON
+
+The crypto Fear & Greed Index (0 = extreme fear, 100 = extreme greed) — a macro regime indicator.
+
+**How to leverage:** best as a *regime filter,* not a trade trigger. Pairs powerfully with **Smart Money** — retail panicking (extreme fear) while whales accumulate is one of the highest-conviction contrarian setups on the platform.
+
+## Token Derivatives — +15 cr · OFF
+
+Per-ticker live perpetual structure from Hyperliquid via Shekel's indexer: open interest with 1h/4h/24h change, funding rate plus 1h/8h/24h TWAPs, perp mark/index spread, basis, and max available leverage.
+
+**How to leverage:** for strategies that read *positioning* — funding TWAP divergences, OI building into a move, perp premium/discount as a crowding gauge. Heavier than Token Data's basic funding field; turn it on when your edge is derivatives-structure-driven.
+
+## Sentiment — +10 cr · ON
+
+12-hour macro and crypto news recaps from Gloria AI — distilled headlines and themes the agent can read while deciding.
+
+**How to leverage:** for strategies that react to *narrative* (Fed pivots, ETF approvals, regulatory or exchange news). Purely technical prompts ("RSI cross + EMA confluence") can leave it off and save the credits.
+
+## Liquidation Data — +20 cr · ON
+
+CoinGlass derivatives feed: long/short ratio, aggregated liquidation flow (longs vs shorts wiped out), OI percent-change, and OI-weighted funding.
+
+**How to leverage:** tells you what's happening *under* the price — who's getting hurt and how leveraged the market is. Needed for *fade-the-flush, long-capitulation, short-squeeze,* or *funding-extreme* strategies. Funding-rate divergence from price action is a classic tell.
+
+## Smart Money — +10 cr · ON
+
+Whale positioning and notional flows per token, from leaderboard-wallet activity — long/short bias by token from the largest positioned traders.
+
+**How to leverage:** for *follow-smart-money* or *fade-retail-when-whales-disagree* setups. Most powerful when whale positioning contradicts retail Fear & Greed. Whales are early but not always right — use as conviction weighting, not gospel.
+
+## Futures/Options Signals — +10 cr · ON
+
+Directional signals from futures and options markets with confidence scores (Athena AI): basis spreads, term-structure shifts, and short/medium/long-term bias from derivatives positioning.
+
+**How to leverage:** especially for **swing strategies (1h+ intervals)** where derivatives lead spot by hours-to-days. Short-frequency scalping (15m/30m) gets less — the signal cadence doesn't match.
+
+## Max Pain — +50 cr · OFF
+
+Institutional-grade liquidation max-pain levels — the price zone where the most leveraged positions across the market would be wiped out. The same data MMs and prop desks use to map liquidity targets (CoinGlass Pro tier).
+
+**How to leverage:** max pain acts as a probability-weighted **price magnet** — markets statistically gravitate toward the level that maximizes liquidation damage on the overcrowded side. Use for *"limit orders at liquidity targets," "fade extended moves toward max pain,"* or *"size up when distance from max pain exceeds X%."* Combine with Liquidation Data: max pain tells you **where** the liquidity sits, liquidation flow tells you **who** is getting hurt right now.
+
+<Warning>
+Max pain is a **magnet, not a wall** — strong news can punch through it. Backtest coverage starts **2026-05-11** (when Shekel began indexing it); earlier backtest dates simply run without a max-pain section. Best for liquidity-event strategies and 4h+ swing trading; less useful for pure momentum.
+</Warning>
+
+## ETF Flows — +5 cr · ON (BTC + ETH only)
+
+Daily net flow into BTC and ETH spot ETFs — an institutional macro-demand signal. Most recent daily flow plus 7-day and 30-day cumulative trends.
+
+**How to leverage:** a slow macro tide, not a trade trigger. Sustained inflows support a structurally bullish bias on BTC/ETH; persistent outflows are a caution flag.
+
+## Custom Endpoint — Free · advanced
+
+Feed your agent any external data — proprietary signals, on-chain metrics, custom indicators — by pointing it at your own API. See [Custom Data](/agent/custom-data) for the full request/response contract (live **and** backtest).
+
+---
+
+## Data Points Reference
+
+The complete field-by-field schema of everything your agent sees, per source. **Use these exact names in your strategy prompt** to make the agent reason about specific values — e.g. *"when `rsi.4h` > 70 AND `funding_rate.annualized_pct` > 30%, treat as exhaustion."* Names match what the model literally sees inside the `<token_data>`, `<liquidation_data>`, etc. blocks of the prompt. Unavailable values (e.g. a weekly 200-EMA on a young token) come through as `null` and the agent handles that gracefully.
+
+<AccordionGroup>
+
+<Accordion title="Token Data (free, ON)">
+
+**Symbol & price**
+```
+symbol                     "TICKER/USDC:USDC"
+base                       token symbol (e.g. "BTC")
+quote                      quote currency (always "USDC")
+mark_price                 current Hyperliquid mark price
+mid_price                  current Hyperliquid mid price
+price_change_24h           absolute USD change over 24h
+price_change_percent_24h   % change over 24h
+```
+
+**Funding rate**
+```
+funding_rate.current_value    raw per-payment funding (decimal)
+funding_rate.annualized_pct   annualized funding rate %
+```
+
+**Per-timeframe technicals** (`{tf}` = 15m, 1h, 4h, 1d)
+```
+rsi.{tf}                       Relative Strength Index (14)
+atr.{tf}                       Average True Range (14, raw price)
+atr.percentage_{tf}            ATR as % of price (use for dynamic stops)
+macd_line_slope.{tf}.macd_line     MACD line (12/26/9)
+macd_line_slope.{tf}.signal_line
+macd_line_slope.{tf}.histogram     MACD histogram (line − signal)
+obv.{tf}                       On-Balance Volume (cumulative)
+adx.{tf}                       Avg Directional Index (14). <20 weak / >25 trending
+vwap.{tf}                      Volume-Weighted Avg Price (daily reset)
+```
+
+**Bollinger Bands** (1h, 20-period, 2σ)
+```
+bollinger.band_width    (upper − lower) / middle — regime gauge
+bollinger.upper_band
+bollinger.lower_band
+bollinger.middle_band   20-period SMA (1h)
+```
+
+**EMA grid** — 4 timeframes (1h, 4h, daily, weekly) × 3 periods (20, 50, 200), distance + slope per cell:
+```
+ema.{tf}_{period}_distance_pct   signed % from price to EMA (+ above, − below)
+ema.{tf}_{period}_slope_pct      5-bar % change of the EMA (+ up-sloping)
+```
+e.g. `ema.daily_20_distance_pct`, `ema.4h_50_slope_pct`. A daily `|slope_pct| < ~0.1%` is effectively flat.
+
+**StochRSI** (14/14/3)
+```
+stochrsi_4h    [0,1]. <0.2 oversold, >0.8 overbought
+stochrsi_1d    higher-TF confluence
+```
+
+**Swing structure** (Bill Williams fractal pivots, confirmed-only)
+```
+swing.4h.last_pivot_high.price / .bars_ago   (4h micro: N=2)
+swing.4h.prev_pivot_high / last_pivot_low / prev_pivot_low
+swing.1d.last_pivot_high.price / .bars_ago   (daily structural: N=5)
+swing.1d.prev_pivot_high / last_pivot_low / prev_pivot_low
+```
+Use for *"broke last swing low → exit long"* or *"higher highs + higher lows → uptrend intact."* Fresh pivots (`bars_ago` < 10 on 4h, < 5 on 1d) are higher-conviction.
+
+</Accordion>
+
+<Accordion title="Token Derivatives (+15 cr, OFF)">
+```
+asset                          token symbol
+open_interest.value            current OI (notional)
+open_interest.change_pct_1h / _4h / _24h
+funding.current_value          current funding (decimal)
+funding.annualized_pct
+funding.twap_1h_annualized
+funding.twap_8h_annualized
+funding.twap_24h_annualized
+mark_index_spread_bps          perp premium/discount vs index
+                               (+ perp premium = longs paying; − = shorts paying)
+basis_bps                      basis spread vs reference
+max_leverage_available         current HL max leverage cap
+_meta.indexer_observed_at      when snapshot was taken
+_meta.indexer_latency_sec      age of snapshot (seconds)
+_meta.stale_warning            true if snapshot > 30 min old
+```
+</Accordion>
+
+<Accordion title="Fear & Greed Index (free, ON)">
+```
+status                       "success"
+data.value                   0–100 score
+data.value_classification    "Extreme Fear" … "Extreme Greed"
+data.timestamp               Unix seconds
+```
+</Accordion>
+
+<Accordion title="Sentiment (+10 cr, ON)">
+Narrative text, not structured numbers.
+```
+recap          paragraph(s) of recent macro + crypto headlines/themes
+generated_at   timestamp of the recap
+```
+Reference in prompts like *"if news mentions a Fed pivot, increase risk aversion."*
+</Accordion>
+
+<Accordion title="Liquidation Data (+20 cr, ON)">
+```
+long_short_ratio_4h     global L/S ratio (1.0 balanced; >1 longs; <1 shorts)
+ls_signal               "long_dominance" / "short_dominance" / "neutral"
+long_liq_dominance_4h   % of 4h liquidations that were longs
+                        (>0.6 long capitulation; <0.4 short squeeze)
+liq_signal              "long_capitulation" / "short_squeeze" / "neutral"
+oi_change_4h_pct        open interest % change over 4h
+avg_funding_rate_oi     OI-weighted average funding rate
+ts                      snapshot timestamp
+```
+</Accordion>
+
+<Accordion title="Smart Money (+10 cr, ON)">
+Array of per-token records (BTC, ETH, SOL, XRP pinned; others rotate):
+```
+token                  symbol
+total_positions        # of tracked whale positions
+position_percentage    e.g. "60% SHORT"
+money_percentage       notional-weighted bias (e.g. "86% SHORT")
+percentage             numeric majority side %
+position               "LONG" / "SHORT" / "NEUTRAL"
+signal_duration        "short-term" / "mid-term" / "long-term"
+avg_hold_hours / median_hold_hours
+total_notional_value   total $ of all tracked positions
+net_notional_value     net directional exposure (signed)
+```
+</Accordion>
+
+<Accordion title="Futures/Options Signals (+10 cr, ON)">
+Per symbol (BTC, ETH primarily), from Athena AI:
+```
+Symbol
+Monthend_MP / Quarterend_MP        max-pain projections
+Top_Long / Top_Short               % of top traders long/short
+Global_Long / Global_Short         % of all traders long/short
+Top_Ratio / Global_Ratio           long/short ratios
+Funding_Rate / Close_Basis
+Futures_Signal                     "Strong Long" … "Very Short"
+Options_Shortterm_Signal           short-term options bias
+Options_Midterm_Signal             ~1 month
+Options_Longterm_Signal            ~3+ month
+Athena_Wisdom_Basis / _Shortterm / _Midterm / _Longterm   composites
+```
+</Accordion>
+
+<Accordion title="Max Pain (+50 cr, OFF)">
+```
+symbol / current_price
+
+near_term.window                    "24h"
+near_term.long_max_pain.price / .liq_level_usd / .distance_pct
+near_term.short_max_pain.price / .liq_level_usd / .distance_pct
+
+extended.window                     "7d"
+extended.long_max_pain.*  / extended.short_max_pain.*
+
+# top-level mirror (defaults to near-term)
+long_max_pain.* / short_max_pain.*
+max_pain_price                      single canonical max-pain price
+distance_pct                        % distance from current price
+```
+Both windows update every ~30 min across ~30 tokens.
+</Accordion>
+
+<Accordion title="ETF Flows (+5 cr, ON · BTC + ETH only)">
+```
+asset             "BTC" or "ETH"
+latest_date       last observation (YYYY-MM-DD)
+latest_flow_usd   most recent daily net flow ($, + inflow / − outflow)
+latest_price_usd  spot price at last observation
+trend_7d_net      7-day cumulative net flow ($)
+trend_30d_net     30-day cumulative net flow ($)
+ts                snapshot timestamp
+```
+</Accordion>
+
+</AccordionGroup>
+
+### Referencing fields in your prompt
+
+The agent reads your strategy as narrative and reasons about it alongside the live data — it doesn't blindly execute rules. Naming specific fields gives it concrete anchors, which produces tighter, more repeatable decisions than vague phrasing. Examples that work:
+
+```text
+"Stand down when adx.4h < 20 — low-trend regime."
+
+"Only take longs when ema.daily_20_distance_pct > 0 AND
+ ema.daily_20_slope_pct > 0 (price above an up-sloping 20-day EMA)."
+
+"Exit long if price closes below swing.1d.last_pivot_low.price —
+ structural break against the position."
+
+"If liq_signal is 'long_capitulation' AND ema.4h_50_distance_pct < 0,
+ treat as a bullish refuel candidate."
+```
+
+<Note>
+Whatever data sources you enable for **live** trading, the [Backtest Engine](/backtesting/overview) feeds the agent the same sources at each historical decision point — so a strategy that leans on a given signal behaves the same in simulation as in production (subject to each source's historical coverage window).
+</Note>

@@ -1,0 +1,78 @@
+---
+title: Managing Your Agent
+description: How your agent manages positions, and how you pause, modify, and stop it
+---
+
+## How your agent manages positions
+
+Your agent doesn't just open and close trades — it actively **manages** a position over its life. You don't configure any of this; it's part of how the agent reasons each run, governed by your strategy and risk limits.
+
+| Action | What it does |
+|---|---|
+| **Scale in (add)** | If conviction grows, the agent adds to an existing position. On Hyperliquid you hold one position per token, so adding blends your average entry and grows size — never beyond your **Position Size Max %**. |
+| **Reduce (partial profit / de-risk)** | Closes *part* of a position (e.g. 50%) at market to lock gains or trim exposure while staying in the trade. |
+| **Take-profit ladders** | Instead of one target, the agent rests **multiple** TP rungs on the exchange (e.g. 40% at the first, 35% higher, let the rest run). Each fills on its own. In the Positions table, a laddered TP shows a dropdown arrow — click it to see every rung's price and %. |
+| **Manage exits** | As a trade moves your way, the agent raises the stop toward break-even and re-sets the TP ladder — *without* changing position size. |
+| **Flip** | If the thesis reverses, an opposite-direction trade nets against the position and can flip you to the other side. |
+| **Close** | Fully exits (100%). |
+
+Your **Position Size Max %** still caps how large one position can grow, and **Max Open Positions** still caps how many tokens you hold. [Backtests](/backtesting/overview) model scale-ins, reduces, flips, TP ladders, and stop adjustments identically to live — so a strategy that builds, trims, and manages exits behaves the same in simulation as in production.
+
+## Pause & Resume
+
+Tap **Pause** on the home screen dashboard to temporarily halt your agent. The agent will not make any new decisions while paused, but all open positions remain active on Hyperliquid.
+
+Tap **Resume** when you are ready to restart. The agent will pick up on its next scheduled interval.
+
+<Tip>
+Pausing is the right move before a major market event or scheduled news release where you want manual control. Your settings and strategy are preserved exactly as-is.
+</Tip>
+
+## Modify Agent
+
+Go to **Modify Agent** from the dashboard (or tap ⋯ → Modify) to update:
+
+- **Strategy Prompt & Important Notes** — refine your trading thesis
+- **Model** — switch AI model at any time
+- **Token Whitelist** — add or remove tradeable assets
+- **Run Schedule** — change how often the agent wakes up
+- **Risk Parameters** — adjust position sizes, drawdown limits, daily loss limits
+- **Data Sources** — toggle data sources on and off
+
+All changes take effect on the **next scheduled run** — the current cycle is not interrupted.
+
+<Note>
+You can also ask your agent to propose changes via chat. If you ask it to review your strategy or risk settings, it may respond with a formal proposal card you can Apply or Dismiss. See [Setting Change Proposals](/chat/setting-proposals).
+</Note>
+
+## Stop Agent
+
+To fully shut down your agent and release the Hyperliquid API key:
+
+Go to **Modify Agent → Deactivate Agent**.
+
+This stops all scheduled runs. Your backtest history and account data are preserved. You can launch a new agent at any time.
+
+<Warning>
+Stopping the agent does not close your open Hyperliquid positions. Those must be closed manually on Hyperliquid or via a Manual Trade in the app.
+</Warning>
+
+## Manual Trade
+
+While your agent is running, you can place one-off manual orders from the app:
+
+Tap **⋯ → Manual Trade** from the dashboard.
+
+Manual trades execute immediately and are logged separately from the agent's automated decisions.
+
+## Checking Agent Status
+
+The dashboard hero card shows your agent's current state:
+
+| Status | Meaning |
+|---|---|
+| **LIVE** (green dot) | Agent is active and running on schedule |
+| **PAUSED** | Agent is paused — no new decisions until resumed |
+| **DISCONNECTED** | Agent cannot reach the backend — check your connection |
+
+The **Next run** countdown shows exactly when the agent will next wake up.

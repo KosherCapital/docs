@@ -1,0 +1,44 @@
+---
+title: Decision Records & Self-Improvement
+description: Let your agent review its own track record and propose upgrades
+---
+
+Shekel can save a structured record of every trading decision your agent makes, then run a **structured review** over that history to suggest concrete improvements to your strategy and settings. Find it on the web app under **Settings** in the sidebar.
+
+<Warning>
+Open **Settings** from the **sidebar** (the account page) — not the gear icon on the dashboard, which opens *Modify Agent*.
+</Warning>
+
+## Decision records (on by default)
+
+Shekel saves a structured record of each trading decision — what the agent saw, what it decided, and (when possible) what happened afterward. This powers the self-improvement review.
+
+Turn off **Save my agent's decision records** if you don't want new records stored. Turning it off also disables scheduled reviews and auto-apply.
+
+## Self-improvement review — 35 credits / run
+
+The **Self-improvement** section runs a structured review over recent trades and decision records. It can suggest up to **three** changes across strategy text, risk limits, sizing, whitelist, schedule, and related settings.
+
+- Tap **Run reflection (35 credits)** for an on-demand review.
+- Suggestions appear in **agent chat** as cards with **Apply / Dismiss** per change (and in Settings when you open a past run).
+- Expand a completed run to read the full **Review** text.
+
+<Note>
+Reviews run on **Venice AI** — not your BYOA chat model.
+</Note>
+
+## Scheduled reviews
+
+Enable **Run reflections automatically** and pick an interval — every **1, 3, 7, or 14 days**, or a custom hour interval (12–2160 hours). The next scheduled time is shown when enabled. Requires decision records to stay on.
+
+## Auto-apply (beta)
+
+An optional checkbox. When on, approved-style changes apply automatically after each review — **including risk and sizing limits** — without your clicking Apply.
+
+<Warning>
+Auto-apply is still in **beta**. It does not replace your judgment on risk — monitor every upgrade in chat (green **Auto-applied** cards per change) or in Settings after each run.
+</Warning>
+
+## Backtest history feeds learning
+
+Every backtest you complete is saved to your account and is available to the review (and to your agent in chat). Pin a **gold standard** run in Backtest History (📌) and the agent automatically measures new variants against it. See [Backtesting → Results](/backtesting/results).

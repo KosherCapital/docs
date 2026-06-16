@@ -1,0 +1,97 @@
+---
+title: Troubleshooting
+description: Common issues and how to fix them
+---
+
+<AccordionGroup>
+
+  <Accordion title="Agent is not running">
+    **Check these in order:**
+
+    1. **Deposit confirmed** — Go to Account and confirm your Hyperliquid deposit shows as confirmed. It can take a few minutes after your Hyperliquid account shows the USDC balance.
+    2. **Agent is active** — On the dashboard, confirm the status pill shows LIVE (not PAUSED or DISCONNECTED).
+    3. **Credits available** — Go to Account and check your credit balance. The agent pauses automatically when credits reach zero.
+    4. **Next run countdown** — The dashboard shows when the agent will next run. If the countdown is there, it's working — it just hasn't fired yet.
+  </Accordion>
+
+  <Accordion title="Credits depleted faster than expected">
+    Higher-frequency schedules and larger token whitelists use significantly more credits.
+
+    **To reduce credit consumption:**
+    - Switch from a 15-min or 30-min schedule to 1h or 4h
+    - Reduce your whitelist to 3–5 tokens
+    - Disable data sources not referenced in your strategy
+    - Switch to a lighter model (DeepSeek Flash, Llama 3.3)
+
+    Go to **Buy Credits** (left nav or Account screen) to top up, or go to **Token Dashboard** to stake SHEKEL for ongoing passive credit rewards.
+  </Accordion>
+
+  <Accordion title="Trade not executing">
+    If the agent's decision was to trade but the order wasn't placed:
+
+    1. Check your Hyperliquid account has sufficient margin for the position size
+    2. Open the trade log on the dashboard — every skipped trade has a reason logged ("insufficient margin", "position limit reached", etc.)
+    3. The agent may have decided to WAIT — WAIT decisions are logged with full reasoning. Open the decision details to read why.
+  </Accordion>
+
+  <Accordion title="Backtest network error">
+    1. Make sure you have a stable internet connection
+    2. Try force-closing and reopening the app
+    3. If the error persists, the backtest engine may be temporarily unavailable. Check again in a few minutes.
+    
+    Backtests run in the cloud — you can close the app and return later. Active runs appear on the dashboard.
+  </Accordion>
+
+  <Accordion title="Custom data endpoint not working">
+    **For live agents:**
+    - Confirm the URL is `https://` (not `http://`)
+    - Test the URL directly in a browser — it should return valid JSON
+    - Confirm the endpoint responds in under 5 seconds
+    - Check the URL resolves to a public IP (not localhost or a private range)
+
+    **For backtests:**
+    - Verify your response includes the `data` array with `time` fields in milliseconds
+    - Confirm timestamps are aligned to 4h UTC boundaries (00:00, 04:00, 08:00, 12:00, 16:00, 20:00)
+    - If you've updated historical data, clear the cache at `.cache/custom/` to force a fresh fetch
+    - Check that `start_ms` and `end_ms` parameters are handled correctly — the engine passes them as query strings
+
+    See [Custom Data Endpoint](/agent/custom-data) for the full API contract.
+  </Accordion>
+
+  <Accordion title="App not updating after reinstall">
+    If you see stale data after reinstalling:
+
+    Go to **Android Settings → Apps → Shekel → Clear Data**, then reopen the app.
+
+    This clears the local cache. You'll need to re-enter your API key on next launch.
+  </Accordion>
+
+  <Accordion title="Wallet not connecting">
+    1. Make sure you're on the correct network — SHEKEL staking is on **Base** (chainId 8453)
+    2. Try a different wallet app (MetaMask, Phantom, or Coinbase Wallet all work)
+    3. Ensure your wallet app is up to date
+    4. Try disconnecting and reconnecting from **Account → Connect Wallet**
+  </Accordion>
+
+  <Accordion title="Agent paused after drawdown limit hit">
+    This is expected behavior. If your portfolio dropped to or below your Max Drawdown threshold, the agent paused automatically.
+
+    1. Review your open positions — they remain active and may need to be managed manually
+    2. If the drawdown was due to normal market volatility rather than a strategy failure, consider increasing your Max Drawdown % in Modify Agent
+    3. Tap **Resume** on the dashboard when you're ready to restart
+
+    Your agent in chat can help you analyze whether the pause was warranted: *"You paused for drawdown. Walk me through what happened."*
+  </Accordion>
+
+</AccordionGroup>
+
+## Still Need Help?
+
+<CardGroup cols={2}>
+  <Card title="Discord" icon="discord" href="https://discord.gg/shekel">
+    Join the community and ask in #support
+  </Card>
+  <Card title="Email" icon="envelope" href="mailto:support@shekel.xyz">
+    support@shekel.xyz
+  </Card>
+</CardGroup>

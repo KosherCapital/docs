@@ -1,0 +1,139 @@
+---
+title: What Your Agent Knows
+description: Full breakdown of every data source available to your agent in chat
+---
+
+When you send a message, your agent fetches fresh data from all of the following sources before responding. Every answer is grounded in real numbers.
+
+## Live Account & Positions
+
+Your agent has a real-time view of your Hyperliquid account:
+
+- **Account value** — total portfolio value including unrealized P&L
+- **Margin used** — how much of your capital is actively committed
+- **Withdrawable balance** — free margin available to deploy
+- **Open positions** — every current position with:
+  - Coin, direction (long/short), and size
+  - Entry price and current mark price
+  - Unrealized P&L in USD and as a percentage
+  - Leverage
+  - Estimated liquidation price
+
+**Example questions:**
+- *"What's my total account value right now?"*
+- *"What positions are you holding?"*
+- *"How far am I from liquidation on my SOL long?"*
+- *"How much margin do I have left to deploy?"*
+
+---
+
+## Performance & P&L
+
+Your agent has access to aggregated performance statistics across your trading history:
+
+- **Total trades** executed
+- **Win rate** — percentage of profitable trades
+- **Total P&L** — cumulative dollar return
+- **7-day P&L** — performance over the past week
+- **30-day P&L** — performance over the past month
+- **Per-token breakdown** — win rate, total P&L, and trade count for each coin in your whitelist
+
+**Example questions:**
+- *"How am I performing this month?"*
+- *"What's my win rate over the last 30 days?"*
+- *"Which token has made me the most money?"*
+- *"Am I profitable overall?"*
+
+---
+
+## Trade & Decision History
+
+Your agent has the last 30 trading decisions stored in its context, including:
+
+- The **token** analyzed
+- The **action** taken (LONG, SHORT, CLOSE, or WAIT)
+- The full **reasoning** — what data the agent saw and why it acted
+- Whether the decision was **executed** or skipped, and why it was skipped if not
+- The **timestamp** of the decision
+
+This lets you audit exactly what the agent was thinking at any point.
+
+**Example questions:**
+- *"Walk me through your last 5 trades."*
+- *"Why did you go long on SOL yesterday?"*
+- *"What was your reasoning on the BTC short last week?"*
+- *"How many times have you waited vs. traded this month?"*
+- *"Why did you skip the ETH trade on Monday?"*
+
+---
+
+## Strategy & Configuration
+
+Your agent knows its own configuration completely:
+
+- The full **strategy prompt** you wrote
+- Your **important notes** (hard constraints)
+- Current **risk parameters** (max positions, position size range, drawdown limits)
+- **Token whitelist**
+- **AI model** and **run schedule**
+- **Data sources** enabled
+
+This lets you ask the agent to reflect on whether its settings make sense for current market conditions.
+
+**Example questions:**
+- *"What's your current strategy?"*
+- *"Do you think my max drawdown limit is appropriate?"*
+- *"Is my whitelist still the right set of tokens?"*
+- *"Should I tighten my position size limits?"*
+
+---
+
+## Strategy Memory
+
+Between runs, your agent maintains an ongoing **strategy memory** — a running self-analysis note it updates over time. This includes observations about what's working, market regime notes, and self-corrections.
+
+The agent references this memory in chat to give you context on how its thinking has evolved.
+
+**Example questions:**
+- *"What has your experience been with this strategy so far?"*
+- *"Have you noticed any patterns in your wins and losses?"*
+- *"What would you change about how you've been trading?"*
+
+---
+
+## Backtest History
+
+Your agent has access to your last 5 completed backtests, including:
+
+- Backtest name and date range
+- Tokens tested and model used
+- **Total return %**
+- **Sharpe ratio**
+- **Win rate**
+- **Max drawdown**
+- **Profit factor**
+- Run duration and interval
+
+This enables powerful comparisons between simulated and live performance.
+
+**Example questions:**
+- *"Compare my live results to my last backtest."*
+- *"Based on my last 3 backtests, what's working?"*
+- *"Why is my live win rate lower than the backtest showed?"*
+- *"Which model performed best in my backtests?"*
+- *"What did the backtest predict my Sharpe ratio would be?"*
+
+---
+
+## What Happens When You Ask
+
+Every chat message triggers a fresh data fetch in parallel:
+
+1. Agent config pulled from the database
+2. Live portfolio and positions fetched from Hyperliquid
+3. Performance metrics aggregated from trade history
+4. Last 30 decisions loaded from logs
+5. Strategy memory loaded
+6. Last 5 backtest reports loaded
+
+All of this happens before the AI model sees your message. The response you get is always grounded in current data, not a cached snapshot.

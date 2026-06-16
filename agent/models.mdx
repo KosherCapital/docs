@@ -1,0 +1,56 @@
+---
+title: AI Models
+description: Choose the right model for your strategy and budget
+---
+
+Every agent decision is powered by an AI language model. You can switch models at any time from Modify Agent — the change takes effect on the next run.
+
+All models run privately through [Venice AI](https://venice.ai). Your prompts, strategies, and trade data are never used to train any model.
+
+## Model Comparison
+
+| Model | Speed | Credit Cost | Best For |
+|---|---|---|---|
+| **Claude Fable 5** | Slower | ●●●● | New flagship. The most capable model — for the most demanding, nuanced strategies. 1M-token context. |
+| **Claude Opus 4.8** | Slower | ●●● | **Recommended default.** Excellent for complex, nuanced strategies at a lower cost than Fable 5. |
+| **Claude Sonnet 4.6** | Fast | ●●○ | Fast & efficient — strong reasoning at lower cost. |
+| **Claude Opus 4.7** | Slower | ●●● | Prior-generation flagship. Powerful and nuanced. |
+| **Claude Opus 4.6** | Slower | ●●● | Powerful, slightly older generation. |
+| **Grok 4.3** | Fast | ●●○ | Latest Grok. Strong market intuition. |
+| **Grok 4.2** | Fast | ●●○ | Proven performer. Good all-rounder. |
+| **Grok 4.1 Fast** | Fastest | ●○○ | Speed-focused. Good for high-frequency schedules. |
+| **DeepSeek v4 Pro** | Medium | ●●○ | Strong analytical reasoning. |
+| **DeepSeek v4 Flash** | Fastest | ●○○ | Lightweight. Good for simple rule-based strategies. |
+| **Qwen 3 235B** | Medium | ●○○ | Large open model. Capable generalist. |
+| **Llama 3.3 70B** | Fastest | ○○○ | Budget option. Good for simple strategies. |
+
+## Choosing a Model
+
+**Start with Claude Opus 4.8** — the recommended default, with an excellent balance of nuanced reasoning and cost. Reach for **Fable 5** when a strategy is unusually demanding and you want the most capable model available; drop to **Sonnet 4.6** when you want speed and efficiency.
+
+**Step up to a flagship (Opus 4.8 / Fable 5) if:**
+- Your strategy requires nuanced judgment across many signals simultaneously
+- You run at lower frequency (4h+) and credit cost per run matters less
+- Your backtests show the strategy benefits from deeper reasoning
+
+**Step down to Grok Fast or DeepSeek Flash if:**
+- You run at high frequency (15 min or 30 min) and want to preserve credits
+- Your strategy is mostly rule-based with clear numeric thresholds
+- You're in testing mode and don't need top-tier performance yet
+
+## Chat Models
+
+The model powering your **agent chat** is independent of your trading model. You can switch it per-session from the model picker in the chat header.
+
+| Model | Credits per Message | Best For |
+|---|---|---|
+| Grok Fast | 15 cr | Quick lookups, simple questions |
+| Grok 4.3 | 30 cr | Strategy analysis, deeper questions |
+| Claude Sonnet | 45 cr | Nuanced strategy review |
+| Claude Opus | 120 cr | Deep portfolio analysis, major reviews |
+
+Your chat model selection is saved and remembered across sessions.
+
+<Tip>
+Use a cheaper chat model for quick questions ("what positions are you holding?") and switch to Sonnet or Opus when you want a serious strategy review.
+</Tip>

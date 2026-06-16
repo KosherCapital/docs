@@ -1,0 +1,45 @@
+---
+title: Privacy & Security
+description: How Shekel protects your funds, strategy, and data
+---
+
+## Your Funds Are Non-Custodial
+
+Shekel never holds or custodies your money. All capital stays in your Hyperliquid account. You fund Hyperliquid directly and Shekel trades on your behalf using a **trade-only API key**.
+
+A trade-only Hyperliquid API key can place and cancel orders. It cannot withdraw funds. Even in a worst-case scenario where Shekel's backend were completely compromised, an attacker with your API key could not move funds out of your Hyperliquid account.
+
+<Tip>
+When generating your Hyperliquid API key, always select trade-only permissions — never withdrawal permissions.
+</Tip>
+
+## API Key Encryption
+
+Your Hyperliquid API key is encrypted with AES-256 before being stored. The encryption key is stored separately from the database. Shekel engineers cannot read your API key.
+
+## Private AI Inference
+
+All LLM inference runs through [Venice AI](https://venice.ai), which provides private, uncensored model access with a strict no-training policy:
+
+- Your strategy prompt is never used to train any AI model
+- Your trading decisions and reasoning are never used for model training
+- Venice does not log or retain your prompts beyond the duration of the API call
+
+## Your Strategy Is Private
+
+Your strategy prompt, important notes, token whitelist, and risk parameters are stored encrypted in the Shekel database. Shekel does not share or sell your trading strategy data.
+
+## Wallet Connection (Staking Only)
+
+Connecting a wallet in the app is optional and only required for SHEKEL token staking. Wallet connection uses standard EVM signing — Shekel never asks for your seed phrase or private key.
+
+The wallet verification signature (SIWE — Sign In With Ethereum) is a gasless, off-chain message that proves you own the wallet. It does not authorize any transfer or smart contract interaction.
+
+## What Shekel Can and Cannot Do
+
+| | Shekel Can | Shekel Cannot |
+|---|---|---|
+| Trading | Place and cancel orders | Withdraw funds |
+| Data | Read your portfolio and trade history | Access wallet private keys |
+| Strategy | Store and apply your strategy | Share it with third parties |
+| Tokens | Stake/unstake via on-chain contract | Move tokens without your wallet signature |

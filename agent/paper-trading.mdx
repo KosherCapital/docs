@@ -1,0 +1,44 @@
+---
+title: Paper Trading
+description: Run your agent on live market data with a virtual balance — zero capital at risk
+---
+
+Paper mode runs your agent on **real, live market data** against a **virtual $10,000 balance**. Every trade is simulated — nothing ever touches your Hyperliquid account. It's the dress rehearsal between backtesting and going live.
+
+<Note>
+Paper mode is the middle gate of the recommended path: **configure → backtest → paper-trade 1–2 weeks → review with the AI → go live.** Your agent will guide you through it — ask it *"how's my paper trading going?"* or *"ready to go live?"* for an honest read.
+</Note>
+
+## How it works
+
+- Your agent runs on **exactly** the same schedule, data sources, strategy, and risk limits as live mode.
+- Trades execute against a simulated **$10,000 USDC** portfolio at **real mark prices**.
+- Positions, P&L, fees, and funding rates are all tracked and shown on your dashboard, just like live.
+- The AI chat assistant sees your paper portfolio and can discuss performance, suggest adjustments, or tell you when results look live-ready.
+
+## What's fully simulated
+
+| Behaves like live | Detail |
+|---|---|
+| **Risk caps** | Max drawdown, daily loss, and max open positions are enforced identically. |
+| **Stop-loss & take-profit** | Including multi-rung TP **ladders** (each rung fills as a partial close). A backend poller checks mark prices every ~2 minutes and fills them when triggered — mirroring live execution. |
+| **Limit orders** | Simulated against real mark prices. |
+| **Funding** | Accrued every 8 hours at real Hyperliquid rates. |
+| **Credits** | Standard credit cost still applies — the agent reads data and calls the model the same way. |
+
+## What's different from live
+
+- **No real capital is ever at risk.** The $10,000 is virtual.
+- **No slippage simulation (v1).** Fills are at the current mark price, so paper P&L may **slightly outperform** live — treat it as optimistic.
+- **`[PAPER]` badges** appear throughout the dashboard and chat so you always know which mode you're in.
+
+## Switching modes
+
+Open **Modify Agent → Trading Mode** card → tap **Go Paper** or **Go Live**.
+
+- **Going Paper is instant** — no Hyperliquid account needed.
+- **Going Live** requires a connected Hyperliquid API key and a confirmed USDC deposit.
+
+<Tip>
+Paper-trade for at least 1–2 weeks across different market conditions before going live. A strategy that looks great in a single calm week can behave very differently in a volatile one.
+</Tip>

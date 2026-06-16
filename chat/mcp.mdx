@@ -1,0 +1,56 @@
+---
+title: Connect via MCP (Claude, ChatGPT, Cursor…)
+description: Talk to your Shekel agent from any AI surface that speaks the Model Context Protocol
+---
+
+You can talk to your Shekel agent from any AI client that supports the **Model Context Protocol (MCP)** — Claude Desktop, ChatGPT, Cursor, Goose, and more. Your agent becomes a tool your favorite LLM can call directly: check positions, review backtests, adjust risk, trigger runs — in plain language, without opening the dashboard.
+
+## Connect (Claude Desktop)
+
+<Steps>
+<Step title="Add a custom connector">
+Claude Desktop → **Settings → Connectors → Add custom connector**.
+</Step>
+<Step title="Paste the MCP URL">
+```
+https://shekel-v3-mcp.vercel.app/mcp
+```
+</Step>
+<Step title="Authorize">
+Click **Connect** — Claude opens your browser to the Shekel consent screen on **app.shekel.xyz**. Sign in if you're not already, then click **Approve**.
+</Step>
+<Step title="Try it">
+Back in Claude, ask *"What is my Shekel agent up to?"*
+</Step>
+</Steps>
+
+The same flow works in **ChatGPT** (custom MCP), **Cursor**, **Goose**, and any other OAuth-capable MCP client.
+
+## What your AI surface can do
+
+- **Read** — agent state, recent trades, performance, backtest history, reflections, decision history, live HL state, and unread notifications.
+- **Act (with your approval)** — run backtests, change agent settings, pause/resume, or trigger a manual run. These execute directly; your AI client shows its own *"Allow this tool?"* prompt as the approval step.
+- **Cross-surface sync** — actions and notifications stay in sync with the web app: what you do from Claude shows up there, and vice-versa.
+
+## What it cannot do (hard security boundary)
+
+<Warning>
+These are **first-party-only** — your AI surface's token is categorically blocked from them:
+- Create a new agent (do that in the app first)
+- Move or withdraw funds, bridge, or close positions
+- Export or rotate API keys, or manage your wallet
+
+Only the Shekel app and the mobile app — signed in with your account key — can perform fund/key/wallet actions.
+</Warning>
+
+## Pricing
+
+- **Chatting with your AI is free** — that conversation runs on your own Claude/ChatGPT, not on Shekel.
+- **Most read tools are free** — agent status, trades, performance, backtest history, reflections, notifications, decision history, basic HL state.
+- **Premium market-data tools** carry a small per-call credit fee (they pull proprietary/paid data): max pain (50), liquidations (20), open-interest history (15), ETF-flow sentiment (5). Fear & Greed and basic HL state stay free. If your balance is too low, the tool tells you to top up instead of returning data.
+- **Compute-metered actions** (backtests, manual runs, your live agent) bill against your Shekel credit balance at the normal rate.
+- **BYOK discount** applies no matter where you trigger a run (including from Claude) — *if* you've added your own LLM key on the Settings page. It's opt-in; connecting over MCP does **not** apply it automatically.
+
+## Managing connections
+
+Go to **Settings → MCP Connections** to see every external AI surface you've authorized, and revoke any with one click. Revocation is immediate.

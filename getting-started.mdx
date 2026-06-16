@@ -1,0 +1,70 @@
+---
+title: Quick Start
+description: From download to live agent in under 10 minutes
+---
+
+<Steps>
+  <Step title="Open Shekel">
+    Open the web app at **[app.shekel.xyz](https://app.shekel.xyz)** — it runs in any desktop or mobile browser, no install required.
+
+    Prefer a native app? The Shekel **Android** app is also available — grab the latest APK from [shekel.xyz](https://shekel.xyz) and enable **Install from unknown sources** if prompted. (iOS is coming soon.)
+  </Step>
+
+  <Step title="Sign In">
+    **On the web app:** click **Sign in** and connect your wallet — you sign one free message (no transaction, no gas) to create your account. A brand-new wallet that passes a light reputation check gets a welcome credit bonus.
+
+    **On mobile:** sign in with email or Google and receive **200 free credits** automatically on first open.
+  </Step>
+
+  <Step title="Verify Your Phone Number">
+    Go to **Account → Verify Phone Number**.
+
+    Enter your number, receive a code by SMS, and enter it in the app. Phone verification awards **1,000 bonus credits**.
+  </Step>
+
+  <Step title="Connect a Wallet (Optional)">
+    Go to **Account → Connect Wallet** to link an EVM-compatible wallet (Phantom, MetaMask, Coinbase, or any WalletConnect wallet).
+
+    This is required only if you want to stake SHEKEL tokens for ongoing credit rewards. It is not required to run an agent.
+  </Step>
+
+  <Step title="Fund Your Hyperliquid Account">
+    Shekel trades using funds you hold directly in your own Hyperliquid account. Shekel never holds or custodies your funds.
+
+    1. Go to [app.hyperliquid.xyz](https://app.hyperliquid.xyz)
+    2. Deposit USDC to your account
+    3. The minimum recommended starting balance is **$100 USDC**
+
+    <Tip>You can run backtests without funding — a live account is only needed to deploy an agent.</Tip>
+  </Step>
+
+  <Step title="Generate a Hyperliquid API Key">
+    1. Go to [app.hyperliquid.xyz](https://app.hyperliquid.xyz) → **API Keys**
+    2. Create a new key with **trade-only** permissions (not withdrawal)
+    3. Copy the key — you'll need it in the next step
+
+    <Warning>Never give Shekel a key with withdrawal permissions. A trade-only key is all that's needed and keeps your funds safe even in a worst-case scenario.</Warning>
+  </Step>
+
+  <Step title="Launch Your Agent">
+    Tap **Launch Agent** in the app.
+
+    - Paste your Hyperliquid API key
+    - Write your [strategy prompt](/agent/strategy) (or use the Quick Launch default to get started)
+    - Set your [risk parameters](/agent/settings)
+    - Choose your [AI model](/agent/models)
+    - Tap **Launch**
+
+    Your agent will begin running on its first scheduled interval.
+  </Step>
+</Steps>
+
+## What Happens Next
+
+Once launched, your agent runs on the schedule you set. After each run you'll see a decision card on the home screen showing what the agent did and why.
+
+The **chat bubble** (bottom-right of the dashboard) is your direct line to your agent. Ask it what it's thinking, how you're performing, or to review your strategy. See [Agent Chat](/chat/overview) for everything it can do.
+
+## Before You Go Live
+
+We strongly recommend running at least one backtest against your strategy before deploying real capital. See [Backtesting](/backtesting/overview) to simulate your strategy against historical data first.

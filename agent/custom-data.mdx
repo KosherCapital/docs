@@ -1,0 +1,243 @@
+---
+title: Custom Data Endpoint
+description: Feed your agent any external signal — proprietary indicators, on-chain metrics, alternative data
+---
+
+The Custom Data Endpoint lets you inject any external data into your agent's decision context. Your endpoint returns JSON; Shekel injects it into the prompt as a labeled `custom_data` block that the agent reads before deciding.
+
+There are **two separate integration modes** with different API contracts — one for live agents, one for the backtest engine.
+
+---
+
+## Live Trading Agent
+
+### How It Works
+
+Before every run cycle, your agent sends a GET request to your URL with no parameters. Whatever JSON your endpoint returns is injected into the agent's prompt verbatim. The agent reads it and can factor it into its decision.
+
+### Your Endpoint Requirements
+
+| Requirement | Detail |
+|---|---|
+| Method | `GET` |
+| Parameters | None required |
+| Response | Valid JSON (any structure) |
+| Response time | Under 30 seconds (request times out at 30s) |
+| Auth | Must be publicly accessible — no auth headers supported |
+| Protocol | HTTPS only |
+
+### Example Request
+
+```
+GET https://your-endpoint.com/signals
+```
+
+### Example Response
+
+```json
+{
+  "btc_ema_distance_pct": 2.3,
+  "eth_ema_distance_pct": -0.8,
+  "signal": "BTC extended above 50-EMA, ETH oversold below 200-EMA",
+  "bias": "neutral",
+  "generated_at": "2024-03-15T08:00:00Z"
+}
+```
+
+The agent receives this as a labeled block:
+
+```
+<custom_data>
+btc_ema_distance_pct: 2.3
+eth_ema_distance_pct: -0.8
+signal: BTC extended above 50-EMA, ETH oversold below 200-EMA
+bias: neutral
+</custom_data>
+```
+
+### Tell Your Agent What the Data Means
+
+Add a description to your strategy prompt so the agent knows how to interpret the custom data:
+
+```
+My custom endpoint provides EMA distance signals.
+- ema_distance_pct > 3: price is extended, mean reversion likely
+- ema_distance_pct < -3: price is oversold, bounce likely
+- "bias" field indicates overall directional lean for the day
+Use this alongside the standard technical indicators to inform your decision.
+```
+
+<Tip>
+The clearer your strategy prompt describes the custom data, the better the agent will use it. Don't assume the AI will infer what your fields mean.
+</Tip>
+
+---
+
+## Backtest Engine
+
+The backtest engine simulates decisions step-by-step through historical time. At each step it queries your endpoint for the data that would have existed at that exact moment in the past — your endpoint must return **time-series historical data** covering the full backtest window.
+
+### How It Works
+
+Before the simulation loop begins, the engine pre-fetches all custom data for each coin and the full date range in a single request per coin. This data is cached locally and looked up during the simulation using nearest-prior matching.
+
+### API Contract
+
+```
+GET {your-url}?symbol={COIN}&start_ms={unix_ms}&end_ms={unix_ms}&interval=4h
+```
+
+### Query Parameters
+
+| Parameter | Type | Description |
+|---|---|---|
+| `symbol` | string | Token ticker (e.g. `BTC`, `ETH`, `SOL`) |
+| `start_ms` | integer | Start of requested range — Unix timestamp in **milliseconds** |
+| `end_ms` | integer | End of requested range — Unix timestamp in **milliseconds** |
+| `interval` | string | Always `"4h"` — the backtest decision interval |
+
+### Required Response Format
+
+```json
+{
+  "symbol": "BTC",
+  "interval": "4h",
+  "data": [
+    { "time": 1705276800000, "your_field": 1.234, "another_field": 0.567 },
+    { "time": 1705291200000, "your_field": 1.290, "another_field": 0.541 },
+    { "time": 1705305600000, "your_field": 1.180, "another_field": 0.612 }
+  ]
+}
+```
+
+### Data Rules
+
+- `"time"` is **required** in every row — millisecond UTC timestamp
+- All other field names are up to you — use descriptive names
+- Numeric values are preferred; strings are accepted and passed through
+- Data should cover the full requested date range
+- Rows without a `"time"` field are silently dropped
+- Extra fields (like `"symbol"` or `"interval"`) inside the `data` array are ignored
+
+### Timestamp Alignment
+
+At each 4h decision step, the engine looks up the **most recent data point at or before** that timestamp. It does not interpolate — your data must already be aligned to 4h candle boundaries.
+
+4h candle boundaries in UTC: `00:00`, `04:00`, `08:00`, `12:00`, `16:00`, `20:00`
+
+<Tabs>
+  <Tab title="Python">
+    **Convert datetime to milliseconds:**
+    ```python
+    from datetime import datetime, timezone
+
+    dt = datetime(2024, 1, 15, 8, 0, 0, tzinfo=timezone.utc)
+    ms = int(dt.timestamp() * 1000)   # → 1705305600000
+    ```
+
+    **Convert milliseconds back to datetime:**
+    ```python
+    from datetime import datetime, timezone
+
+    dt = datetime.fromtimestamp(ms / 1000, tz=timezone.utc)
+    ```
+
+    **Align a raw timestamp to the nearest 4h boundary:**
+    ```python
+    FOUR_HOURS_MS = 4 * 3600 * 1000
+    aligned_ms = (raw_ms // FOUR_HOURS_MS) * FOUR_HOURS_MS
+    ```
+  </Tab>
+  <Tab title="JavaScript">
+    **Convert Date to milliseconds:**
+    ```javascript
+    const dt = new Date('2024-01-15T08:00:00Z');
+    const ms = dt.getTime();   // → 1705305600000
+    ```
+
+    **Align to 4h boundary:**
+    ```javascript
+    const FOUR_HOURS_MS = 4 * 3600 * 1000;
+    const aligned_ms = Math.floor(raw_ms / FOUR_HOURS_MS) * FOUR_HOURS_MS;
+    ```
+  </Tab>
+</Tabs>
+
+### Full Example — Liquidation Data
+
+This shows a correctly formatted response for liquidation heatmap data (CoinGlass-style):
+
+```json
+{
+  "symbol": "BTC",
+  "interval": "4h",
+  "data": [
+    {
+      "time": 1705276800000,
+      "liq_buy_usd":  12400000,
+      "liq_sell_usd": 8900000,
+      "liq_net":      3500000
+    },
+    {
+      "time": 1705291200000,
+      "liq_buy_usd":  9100000,
+      "liq_sell_usd": 15200000,
+      "liq_net":      -6100000
+    },
+    {
+      "time": 1705305600000,
+      "liq_buy_usd":  5600000,
+      "liq_sell_usd": 6300000,
+      "liq_net":      -700000
+    }
+  ]
+}
+```
+
+And the corresponding strategy prompt note:
+```
+My custom endpoint provides 4h liquidation data:
+- liq_buy_usd: buy-side liquidations (short squeeze pressure)
+- liq_sell_usd: sell-side liquidations (long squeeze pressure)
+- liq_net: positive = more shorts liquidated, negative = more longs liquidated
+Large spikes in liq_sell_usd often precede cascading long liquidations.
+Use this data to identify liquidity voids and potential squeeze targets.
+```
+
+### Caching
+
+The engine caches endpoint responses per coin and date range as CSV files in `.cache/custom/`. If you update your historical data source, clear the cache to force a fresh fetch:
+
+```bash
+rm -rf .cache/custom/
+```
+
+Or on Windows:
+```
+rmdir /s /q .cache\custom
+```
+
+### SSRF Security
+
+For security, the backtest engine blocks requests to private IP ranges, loopback addresses, and cloud metadata endpoints. Your endpoint must:
+
+- Use `https://` (not `http://`)
+- Resolve to a public IP address
+- Not include credentials in the URL
+
+---
+
+## Registering Your Endpoint
+
+<Tabs>
+  <Tab title="Live Agent">
+    Go to **Modify Agent → Data Sources → Custom Data Endpoint**.
+
+    Paste your HTTPS URL and save. The agent will call it on the next run.
+  </Tab>
+  <Tab title="Backtest">
+    In the Backtest configuration screen, expand **Data Sources** and paste your URL in the **Custom Endpoint** field.
+
+    The engine will pre-fetch all data before the simulation starts.
+  </Tab>
+</Tabs>

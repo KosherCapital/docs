@@ -1,0 +1,81 @@
+---
+title: Agent Settings
+description: Every configurable parameter for your live trading agent
+---
+
+## Agent Identity
+
+**Agent Name**
+A display label for your agent — shown on the dashboard, in chat, and in notifications. Purely cosmetic.
+
+**Token Whitelist**
+The set of tickers your agent is allowed to trade. The agent will never open a position in anything not on this list.
+
+```
+BTC, ETH, SOL, WIF, HYPE
+```
+
+<Tip>Start with 3–5 tokens you know well. A tighter whitelist means the agent's context is more focused and its per-token analysis is deeper.</Tip>
+
+## Run Schedule
+
+How often the agent wakes up to analyze the market and potentially make a decision.
+
+| Schedule | Use Case | Credit Cost |
+|---|---|---|
+| 15 min | Scalping, high-frequency | Highest |
+| 30 min | Active intraday | High |
+| 1h | Balanced intraday | Medium |
+| 2h | Intraday swing | Medium |
+| 4h | Standard swing | Low |
+| 8h | Slow swing | Low |
+| 12h | Daily trend | Very low |
+| 24h | Long-term positioning | Lowest |
+| Custom | Any interval in hours | Varies |
+
+<Note>A run only costs credits when it calls the AI model. A WAIT decision is cheaper than a trade decision because WAIT responses are typically shorter.</Note>
+
+## Risk Parameters
+
+These are enforced hard limits — the agent checks these before executing any trade, and also uses them to guide its reasoning.
+
+### Max Open Positions
+Maximum number of concurrent open trades.
+
+**Default:** 5  
+**Recommendation:** 3–5 for most strategies. Lower for conservative approaches.
+
+### Position Size (Min / Max %)
+The range of capital the agent can allocate per individual trade, expressed as a percentage of total account value.
+
+**Default:** 5% min / 20% max  
+**Example:** With $1,000 in your account and 5–20% range, each position will be between $50 and $200.
+
+### Max Drawdown %
+The agent pauses automatically if your portfolio drops this percentage from its peak value during the session.
+
+**Default:** 15%  
+**How it works:** If your account peaks at $1,000 and falls to $850, the agent pauses and sends a notification.
+
+<Warning>
+The agent pauses — it does not close positions. Open positions remain on Hyperliquid and continue to be affected by market movement after the pause. Go to the app to manually close if needed.
+</Warning>
+
+### Max Daily Loss %
+Similar to Max Drawdown but resets at midnight UTC. The agent pauses if daily P&L reaches this threshold.
+
+**Default:** 5%
+
+## Modifying Settings
+
+Go to **Modify Agent** from the dashboard to update:
+- Strategy prompt and important notes
+- Model selection
+- Token whitelist
+- Run schedule
+- Risk parameters
+- Data source toggles
+
+Changes take effect on the **next scheduled run**.
+
+You can also ask your agent to **propose changes** via chat — it will surface a formal proposal card that you can apply or dismiss with one tap. See [Setting Change Proposals](/chat/setting-proposals).

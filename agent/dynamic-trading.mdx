@@ -1,0 +1,45 @@
+---
+title: Dynamic Trading
+description: Let your agent wake up the moment a market event fires — not just on its schedule
+---
+
+By default your agent thinks on a **fixed schedule** — every 4 hours, every hour, whatever you set. That's a clean rhythm for trend-following, but it means the agent is asleep when something happens between intervals. If BTC breaks the 200 EMA at 3:42 AM and your next run isn't until 8:00 AM, you've missed four hours.
+
+**Dynamic Trading** adds event-driven wake-ups **on top of** your schedule. Both run side by side: the schedule keeps its cadence, and event triggers fire extra runs when something worth reacting to happens.
+
+## Enabling it
+
+1. Open **Modify Agent → ⚡ Dynamic Trading** and toggle it on.
+2. Choose which signals the agent reacts to.
+3. Set your guard rails (cooldown, daily cap).
+
+## Available signals (V1)
+
+<AccordionGroup>
+<Accordion title="BTC EMA Cross (200-period, 4h)">
+Wakes the agent when BTC's 4h close crosses above or below the 200 EMA — a widely-followed trend-flip indicator. Good for *"load up on the regime change"* or *"de-risk when trend breaks"* strategies.
+</Accordion>
+<Accordion title="Liquidation Cascade">
+Wakes the agent when total crypto liquidations in a 1-hour window exceed your configured USD threshold (e.g. $500M). Good for *fade-the-flush* or volatility-expansion plays.
+</Accordion>
+</AccordionGroup>
+
+More signals are planned — tell us what events you'd want your agent to react to.
+
+## Guard rails
+
+- **Cooldown (minutes)** — minimum time between fires. Default **60 min**; prevents the agent from spamming itself if a signal flickers across its threshold.
+- **Daily Cap** — max dynamic fires per day. Default **6**; keeps credit spend predictable.
+- **Credit balance** — dynamic fires use the same balance check as scheduled runs. If your balance hits zero, dynamic fires pause along with the schedule.
+
+## Audit trail
+
+Every dynamic fire is logged with the signal that fired, the threshold value at trigger time, what the agent decided, and how many credits it used — reviewable alongside your scheduled runs.
+
+## Backtest parity
+
+The [Backtest Engine](/backtesting/overview) replays the same dynamic-signal logic against historical data, so you can A/B test your strategy **with and without** event triggers before going live — just toggle Dynamic Trading on the backtest config the same way.
+
+<Note>
+Dynamic Trading is included with credits — no separate subscription or staking gate. You only pay for the runs your agent actually executes.
+</Note>

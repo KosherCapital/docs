@@ -1,0 +1,53 @@
+---
+title: What is Shekel?
+description: AI-powered crypto trading agents on Hyperliquid
+---
+
+Shekel lets you deploy an AI trading agent that monitors the crypto market and executes trades on your behalf on [Hyperliquid](https://app.hyperliquid.xyz) — the highest-performance decentralized perpetuals exchange.
+
+You write a plain-English strategy. The agent reads live market data, runs it through an AI model of your choice, and places trades automatically on your Hyperliquid account. You stay in control: set risk limits, choose which tokens to trade, and pause or stop at any time.
+
+<CardGroup cols={2}>
+  <Card title="Launch Your First Agent" icon="rocket" href="/getting-started">
+    Set up and deploy your agent in under 10 minutes.
+  </Card>
+  <Card title="Write a Great Strategy" icon="pen-line" href="/agent/strategy">
+    The strategy prompt is everything. Learn what works.
+  </Card>
+  <Card title="Talk to Your Agent" icon="message-circle" href="/chat/overview">
+    Your agent has live access to your portfolio, performance, and history — ask it anything.
+  </Card>
+  <Card title="Backtest First" icon="chart-line" href="/backtesting/overview">
+    Simulate any strategy against historical data before going live.
+  </Card>
+</CardGroup>
+
+## How It Works
+
+<Steps>
+  <Step title="You write the strategy">
+    A plain-English prompt describes how you want the agent to think — what signals to weight, how aggressive to be, which market conditions to avoid.
+  </Step>
+  <Step title="The agent reads live data">
+    Before every decision, the agent assembles a full market context: prices, order book depth, funding rates, technical indicators, sentiment, whale flows, and any custom data you provide.
+  </Step>
+  <Step title="The AI decides">
+    The context is passed to your chosen AI model (Claude, Grok, DeepSeek, or others). The model reasons through your strategy and outputs a structured decision: LONG, SHORT, CLOSE, or WAIT — with full reasoning.
+  </Step>
+  <Step title="The trade executes">
+    If the decision is actionable, Shekel places the order on Hyperliquid via your API key. Your funds never leave your account — Shekel only has trade authority, never withdrawal access.
+  </Step>
+</Steps>
+
+## Key Features
+
+- **AI fund manager** — multiple frontier models available; swap at any time
+- **Agent chat** — your agent has full context and can answer questions, analyze your performance, and propose strategy changes
+- **Backtest engine** — simulate any strategy against historical Hyperliquid data, with LLM-driven decision making
+- **Custom data endpoints** — inject any external signal, on-chain metric, or proprietary indicator into your agent's context
+- **SHEKEL token** — stake SHEKEL on Base to earn passive daily credits
+- **Non-custodial** — your funds stay in your Hyperliquid account; you can revoke the API key at any time
+
+<Note>
+All AI inference runs through [Venice AI](https://venice.ai), providing private, uncensored model access. Your strategy, prompts, and trade data are never used to train AI models.
+</Note>

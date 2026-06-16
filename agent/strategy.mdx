@@ -1,0 +1,113 @@
+---
+title: Writing Your Strategy
+description: The strategy prompt is the most important setting — here's how to write a good one
+---
+
+Your strategy prompt is the single instruction the AI reads before every trading decision. It defines your agent's personality, philosophy, and rules. Everything else is context — the strategy is judgment.
+
+## What Makes a Good Strategy
+
+<CardGroup cols={2}>
+  <Card title="Be Specific" icon="crosshairs">
+    "Focus on momentum breakouts with high volume confirmation on BTC and ETH. Avoid the first 2 hours after any major macro news event."
+  </Card>
+  <Card title="Be Risk-Aware" icon="shield">
+    "Never hold more than 3 positions at once. Only enter when potential upside is at least 2x the risk. Prioritize capital preservation."
+  </Card>
+  <Card title="Be Opinionated" icon="brain">
+    "I am macro-bearish on altcoins through Q3. Only go long on BTC and ETH. Short altcoin weakness — especially low-cap memes."
+  </Card>
+  <Card title="Be Timely" icon="clock">
+    "This is a 4h swing strategy. Do not react to noise within a single candle. Look for setups that align across the 4h and daily timeframes."
+  </Card>
+</CardGroup>
+
+<Warning>
+Vague prompts like "trade profitably" give the AI no real direction. The model will still make decisions — they just won't be grounded in any coherent thesis.
+</Warning>
+
+## Strategy Examples
+
+<AccordionGroup>
+  <Accordion title="Momentum Breakout">
+    ```
+    You are a momentum trader focused on Hyperliquid perpetuals.
+
+    Your edge is catching breakouts early and riding the trend:
+    - Look for price breaking above recent consolidation with strong volume
+    - EMA crossovers (9/21) should confirm the direction
+    - RSI above 55 for longs, below 45 for shorts
+    - Open interest increasing on the breakout confirms conviction
+
+    Risk rules:
+    - Maximum 3 simultaneous positions
+    - Position size 10–20% of capital per trade
+    - Exit immediately if price closes back inside the range
+
+    Do not chase — if you missed the initial breakout, wait for a retest.
+    ```
+  </Accordion>
+
+  <Accordion title="Mean Reversion">
+    ```
+    You are a mean-reversion trader. Your thesis is that most crypto moves overextend and snap back.
+
+    Setups to look for:
+    - RSI below 25 (oversold) for long entries, above 75 for short entries
+    - Price significantly extended from the 20-period VWAP (>3%)
+    - Funding rate extremes (very negative = likely reversion up, very positive = likely reversion down)
+
+    Risk rules:
+    - Positions should be smaller (5–10% of capital) because this strategy trades against trend
+    - Take profit at VWAP or RSI 50
+    - Hard stop if price continues >5% in the wrong direction
+
+    Never average down. One entry per setup.
+    ```
+  </Accordion>
+
+  <Accordion title="Macro-Driven Directional">
+    ```
+    You are a macro-driven directional trader. Your primary inputs are sentiment, fear/greed, and broad market structure.
+
+    Thesis: I trade with the macro trend, not against it.
+    - When Fear & Greed is below 25, the market is likely bottoming — start building longs on BTC and ETH
+    - When Fear & Greed is above 80, the market is euphoric — reduce exposure or flip short on altcoins
+    - Strong BTC dominance rising = rotate out of alts into BTC
+    - Strong BTC dominance falling = alts are leading, consider smaller alt positions
+
+    Risk rules:
+    - Maximum 30% of capital deployed at any one time
+    - Never short BTC unless macro is clearly turning (multiple confirming signals)
+    - Positions held across multiple run cycles; do not react to single-candle noise
+    ```
+  </Accordion>
+</AccordionGroup>
+
+## The Important Notes Field
+
+Use **Important Notes** for hard rules the agent must follow regardless of market conditions. Think of this as the strategy prompt's override layer — rules that cannot be reasoned away.
+
+Examples:
+```
+Never trade DOGE or SHIB under any circumstances.
+Always close all positions before Friday 5pm UTC.
+Never use leverage above 3x.
+If BTC drops more than 10% in a single day, close all positions and wait.
+```
+
+## Prompt vs. Important Notes
+
+| Strategy Prompt | Important Notes |
+|---|---|
+| How to think | What never to do |
+| Reasoning framework | Hard constraints |
+| Updated as your thesis evolves | Stable rules |
+| The agent can reason around it | Always honored |
+
+## Tips
+
+- **Iterate** — your first strategy won't be your best. Run a backtest, read the agent's reasoning, then refine.
+- **Be concrete about signals** — instead of "use technicals," say which ones and what thresholds you care about.
+- **Mention your timeframe** — an agent running every 4h should think differently than one running every 15 min.
+- **State what you don't want** — the AI will explore the full action space unless you constrain it.

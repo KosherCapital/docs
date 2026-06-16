@@ -1,0 +1,73 @@
+---
+title: SHEKEL Token & Staking
+description: Stake SHEKEL on Base to earn ongoing passive credit rewards
+---
+
+The SHEKEL token is Shekel's native token on Base network. Staking SHEKEL earns you a daily allocation of credits — proportional to your share of the total staked supply.
+
+## Token Details
+
+| | |
+|---|---|
+| **Token** | SHEKEL |
+| **Chain** | Base (chainId 8453) |
+| **Contract** | `0x5F6a682A58854C7fBE228712aEEFfcCDe0008Ac0` |
+| **Available on** | Uniswap (Base), [app.shekel.xyz/tokens](https://app.shekel.xyz/tokens) |
+
+## How Daily Credits Work
+
+A fixed pool of credits is distributed every 24 hours to all stakers, proportional to stake.
+
+```
+Your daily credits = (your staked SHEKEL / total staked SHEKEL) × daily pool
+```
+
+The daily pool size is displayed on the Token Dashboard in the app. As more SHEKEL is staked, the per-token credit rate changes — staking earlier locks in a larger share.
+
+<Tip>
+Tap the **⚡ Daily credits** row on the Token Dashboard to see a full explanation of the formula and your projected allocation.
+</Tip>
+
+## How to Stake
+
+<Steps>
+  <Step title="Connect Your Wallet">
+    Go to **Account → Connect Wallet** to link an EVM-compatible wallet (Phantom, MetaMask, Coinbase, or any WalletConnect wallet).
+  </Step>
+  <Step title="Verify Your Wallet">
+    Sign a message to link your connected wallet to your Shekel agent account. This is a gasless signature — it doesn't authorize any transfer. Required to receive staking credit rewards.
+  </Step>
+  <Step title="Get SHEKEL">
+    Buy SHEKEL on [Uniswap (Base)](https://app.uniswap.org) or [app.shekel.xyz/tokens](https://app.shekel.xyz/tokens). Make sure you have a small amount of ETH on Base for gas.
+  </Step>
+  <Step title="Stake">
+    Go to **SHEKEL Token** in the app. Enter the amount to stake and tap **Stake**. 
+
+    If this is your first time staking, you'll see two wallet prompts: first to approve the token spend, then to stake. This is normal.
+  </Step>
+</Steps>
+
+## Unstaking
+
+Enter the amount to unstake and tap **Unstake**. Unstaking begins a **cooldown period** — the duration is shown inline with the unstake input.
+
+<Warning>
+Unstaking is not immediate. Your SHEKEL enters a cooldown queue and cannot be traded or moved during this period.
+</Warning>
+
+Once the cooldown completes, your SHEKEL appears as a **claimable tranche** in the Pending Unstakes section. Tap **Claim** to receive your tokens back to your wallet.
+
+## Rewards
+
+Accumulated SHEKEL staking rewards are shown in the **Rewards** section of the Token Dashboard. Tap **Claim** to collect them to your wallet at any time.
+
+Rewards are in SHEKEL tokens. The APR shown on the dashboard is annualized and based on current staking pool size and reward rate.
+
+## APR
+
+Staking APR is displayed on the Token Dashboard and updated in real time. APR varies based on:
+
+- Total SHEKEL staked (larger stake = lower APR per token, same total pool)
+- Current reward stream status (active vs. inactive)
+
+The APR is displayed as inactive if the current reward distribution period has ended and a new one hasn't started.

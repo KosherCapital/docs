@@ -1,0 +1,99 @@
+---
+title: Backtest Engine
+description: Simulate any strategy against historical Hyperliquid data before going live
+---
+
+The Backtest Engine lets you simulate your strategy against historical market data — running real AI decisions on past candles, so you can see how your strategy would have performed before risking real capital.
+
+Unlike traditional backtests, Shekel's engine uses the same AI model and strategy prompt you'd run live. At each decision point, the model sees real historical data and makes a decision exactly as it would in production.
+
+<Tip>
+Run a backtest before going live. A strategy that sounds good in plain English may behave differently than expected when the AI actually works through real market conditions.
+</Tip>
+
+## How to Run a Backtest
+
+<Steps>
+  <Step title="Open Backtest">
+    Tap **Backtest** in the navigation. Available in the web app at [app.shekel.xyz/backtest](https://app.shekel.xyz/backtest) and the mobile app.
+  </Step>
+  <Step title="Choose Your Agent (Optional)">
+    Connect your Shekel API key to load your saved strategy, whitelist, and risk settings automatically. Or configure a custom strategy from scratch.
+  </Step>
+  <Step title="Configure the Run">
+    - **Tokens** — which assets to simulate trading
+    - **Date Range** — the historical period to test (minimum 3 months recommended)
+    - **Interval** — how often the AI makes decisions (matches your live agent's run schedule)
+    - **Model** — which AI model makes the decisions
+    - **Capital** — starting portfolio value for the simulation
+    - **Data Sources** — which data sources to include (same options as live)
+  </Step>
+  <Step title="Review the Credit Estimate">
+    Before running, you'll see an estimated credit cost. The estimate is conservative — actual cost is settled from real token usage after the run completes, and any over-reservation is refunded automatically.
+  </Step>
+  <Step title="Run">
+    Tap **Run Backtest**. The engine runs in the cloud — you can close the app and return when it's complete. Active backtests appear on the dashboard.
+  </Step>
+</Steps>
+
+## What Happens During a Backtest
+
+The engine steps through time at your chosen interval. At each step:
+
+1. Historical market data is assembled for that exact timestamp (prices, order book, technicals, sentiment, etc.)
+2. Your custom endpoint is queried for data at that timestamp (if configured)
+3. The AI model reads the full context and decides: open (**LONG/SHORT**), **add** to a position, **reduce** (partial close), set or re-tune a **take-profit ladder**, **manage exits** (trail the stop, re-set targets), **flip**, **close**, or **wait**
+4. If the decision is actionable, the simulated trade executes at the historical price
+5. Portfolio state is updated (position sizes, P&L, drawdown)
+
+This continues until the backtest period ends. The engine models scale-ins, reduces, flips, take-profit ladders, and stop adjustments **identically to live**, so a strategy that builds, trims, and manages exits behaves the same in simulation as in production.
+
+## Tips for Good Backtests
+
+**Use at least 3 months of data.** Shorter windows may fit noise rather than signal — a strategy that "works" on a 2-week period isn't meaningful.
+
+**Test multiple models on the same strategy.** Different AI models produce meaningfully different results. Claude Opus and Grok 4.3 may reason differently about the same setup.
+
+**Watch for overfitting.** If a strategy only works on one specific time period, it's probably not robust. Test across different market regimes (trending, ranging, high-volatility).
+
+**Compare against your live results.** Once you're live, use the agent chat to compare your live performance against backtest expectations. Divergence is signal — ask your agent why.
+
+**Match your backtest settings to your live settings.** Use the same model, interval, whitelist, and data sources. Differences between backtest and live configurations are a common source of confusion.
+
+## Rigorous Mode (5× range report)
+
+A normal backtest is **one** run — but because the AI runs at a temperature above 0, a single run is just one of many possible outcomes (it can look great or poor by luck). Toggle **🎲 Rigorous (5×)** on the config to run the exact same test **5 times** and see the *range* of what could happen instead of one number.
+
+You get one card (with a live running mean P&L while the 5 run) and, when all finish, a **Range Report**:
+- Average and median return, and the full spread (worst → best run)
+- How many of the 5 runs were profitable, and the worst-case drawdown
+- A plain-English robustness verdict — **Robust / Moderate / Fragile / Coin-flip**
+- A **stress floor** (your worst run) so you judge the downside, not just the upside
+
+A tight band around a positive number = a reliably good strategy; a wide band straddling zero = you got lucky (or unlucky) on a single run. Rigorous costs ~5× a normal run, so it's a premium check best used right before you fund an agent.
+
+<Tip>
+Set **Temperature above 0** before running Rigorous — at 0 the 5 runs cluster together and there's little spread to measure.
+</Tip>
+
+See the [Shekel Score](/backtesting/results#the-shekel-score) on the Results page — the single live-readiness grade that comes out of a Rigorous set.
+
+## Pause & Resume long runs
+
+Every running test's card has a **⏸ Pause** button. Pause saves the run's full state at its next decision step, bills only what it used so far, and refunds the rest (like Stop, but with a bookmark). The card turns amber (*Paused @ X%*) and **▶ Resume** continues the *same* test from the exact step it paused at. Paused runs stay resumable for **7 days**; **🗑 Kill** discards a paused run immediately. Rigorous packs pause/resume all 5 runs at once.
+
+## Dynamic Whitelist
+
+The **Modify Agent Settings** panel on the Backtest page has a **Dynamic Whitelist** toggle. When on, instead of a fixed token list the engine re-ranks the crypto universe each cycle and rotates to the strongest-trending, most-liquid tokens (your whitelist becomes the starting seed). Config: Rotate Every, Max Slots, **Min Score (0–10)**, Pinned, Max Churn/Cycle. Requires LLM Full mode.
+
+<Warning>
+The liquidity data behind the rotation only goes back to **mid-May 2026**. A dynamic-whitelist backtest that *starts* before then can't pick tokens for the early window. For honest tests, start mid-May 2026 or later. "Approximate OI" can fill the gap for rough exploration of older periods, but those early results are estimates, not faithful.
+</Warning>
+
+The **Momentum** tab in the left nav shows the same universe ranking live (0–10 momentum score, LONG/SHORT bias, one-line thesis per token) — measuring each token's strength *independent of Bitcoin*. It's read-only and the same board your agent's auto-rotating whitelist draws from.
+
+## Backtest History
+
+Every completed backtest is automatically saved to your account. Your last 5 backtests are available to your agent in chat — ask it to analyze patterns across runs, compare models, or explain why live results differ. Pin one run as your **gold standard** (📌) and the agent measures new variants against it; if an engine upgrade could change results, a banner tells you to re-run the gold standard before comparing.
+
+Your backtest history is also accessible from **Results** in the app for detailed replay and analysis.

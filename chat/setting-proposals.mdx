@@ -1,0 +1,82 @@
+---
+title: Setting Change Proposals
+description: Let your agent propose its own configuration changes — you approve or dismiss
+---
+
+Your agent can propose changes to its own configuration from within a conversation. If you ask it to review your strategy, risk settings, or token whitelist — or if it notices something worth surfacing based on your performance data — it may respond with a **formal proposal card** alongside its reply.
+
+## How It Works
+
+You ask a question. The agent reasons about it. If it believes a specific setting change is warranted, it returns both a conversational reply and a structured proposal.
+
+The proposal card shows:
+- **Which setting** it wants to change
+- **The proposed new value**
+- **Its reasoning** — drawn from your performance data, backtest history, or market analysis
+
+You tap **Apply** or **Dismiss**. That's it.
+
+<Note>
+The agent cannot change its own settings without your explicit approval. A proposal with no response from you changes nothing.
+</Note>
+
+## Applying a Proposal
+
+Tap **Apply** on the proposal card. The change takes effect immediately and is active on the **next run cycle**.
+
+Changes are applied through the same update path as manual edits — the agent's live configuration is updated in the backend.
+
+## Dismissing a Proposal
+
+Tap **Dismiss** to reject the suggestion. The setting stays as-is. You can tell the agent you disagree and ask it to reason further, or ask for an alternative.
+
+## What Can Be Proposed
+
+The agent can propose changes to any of the following:
+
+| Setting | Example Proposal |
+|---|---|
+| Strategy prompt | "I'd like to add a rule about avoiding trades when funding rates exceed 0.1%" |
+| Important notes | "Add a hard rule to close all positions on Fridays before 4pm UTC" |
+| Token whitelist | "Remove WIF — I've had 0 wins on it across 12 trades. Add HYPE instead." |
+| Run schedule | "Switch from 1h to 4h — the 1h schedule is generating too many WAIT decisions" |
+| Max drawdown % | "Increase from 10% to 15% — the 10% limit has been triggering on normal volatility" |
+| Max daily loss % | "Tighten from 5% to 3% based on your average daily volatility" |
+| Max open positions | "Reduce from 5 to 3 — you currently hold 3.1 positions on average" |
+| Position size min/max | "Increase min to 10% — your 5% positions have lower win rate than your larger ones" |
+
+## Example Conversation
+
+**You:** Review my current risk settings and tell me if anything needs adjusting.
+
+**Agent:** Looking at your last 30 decisions and performance data:
+
+Your max drawdown is set to 10%. Over the past month, your strategy has naturally pulled back 8–9% during normal market fluctuations three separate times, causing automatic pauses. Each of those pauses interrupted setups that subsequently recovered and would have been profitable. 
+
+Your actual strategy volatility profile suggests a 15% drawdown limit would give the agent room to operate without unnecessary interruptions while still protecting against genuine adverse moves.
+
+*[Proposal Card]*  
+**Setting:** Max Drawdown %  
+**Current:** 10%  
+**Proposed:** 15%  
+**Reasoning:** Three pauses over 30 days triggered by normal volatility, not actual drawdown events. Average peak pullback over the period was 8.3%.
+
+[**Apply**] [**Dismiss**]
+
+---
+
+**You:** That makes sense. Apply it.
+
+*(Tap Apply — takes effect on next run)*
+
+---
+
+## Tips for Eliciting Proposals
+
+You don't need to ask for a proposal explicitly. Ask the agent to **review** something and it will decide whether a change is warranted:
+
+- *"Review my current risk settings."*
+- *"Is my strategy still appropriate for the current market?"*
+- *"Look at my win rate by token — should I change my whitelist?"*
+- *"Based on my last 5 backtests, what should I adjust?"*
+- *"Do you think my run schedule is right for this strategy?"*

@@ -1,0 +1,66 @@
+---
+title: Agent Chat
+description: Your direct line to your AI fund manager — with full access to your portfolio, history, and performance
+---
+
+Every Shekel agent has a built-in chat interface — a direct conversation with your AI fund manager. Tap the **chat bubble** in the bottom-right of the dashboard to open it.
+
+This isn't a generic chatbot. Your agent speaks in first person and has live access to everything about your account before responding to any message.
+
+<CardGroup cols={3}>
+  <Card title="Live Portfolio" icon="wallet">
+    Account value, margin, open positions, unrealized P&L
+  </Card>
+  <Card title="Performance Data" icon="chart-bar">
+    Win rate, total P&L, 7d/30d breakdowns, per-token stats
+  </Card>
+  <Card title="Decision History" icon="clock-rotate-left">
+    Last 30 trading decisions with full reasoning
+  </Card>
+  <Card title="Strategy & Settings" icon="sliders">
+    Current strategy, risk limits, whitelist, run schedule
+  </Card>
+  <Card title="Backtest History" icon="flask">
+    Last 5 completed backtests with metrics
+  </Card>
+  <Card title="Strategy Memory" icon="brain">
+    The agent's ongoing self-analysis and notes from prior runs
+  </Card>
+</CardGroup>
+
+## Opening the Chat
+
+Tap the **floating chat bubble** in the bottom-right corner of the dashboard. The bubble shows your agent's avatar initial.
+
+The first time you open chat, you'll see **suggested prompts** — tap any to get started, or type your own question.
+
+## What the Agent Will and Won't Do
+
+**Will do:**
+- Answer questions about your account, positions, and P&L using real data
+- Walk through its reasoning on recent trading decisions
+- Analyze your strategy and suggest improvements
+- Compare your live performance to your backtest expectations
+- Propose concrete changes to your settings (see [Setting Change Proposals](/chat/setting-proposals))
+
+**Will not do:**
+- Make up trades, prices, or performance numbers
+- Reference data it hasn't been given
+- Execute trades directly from chat (those go through the normal run cycle or Manual Trade)
+
+<Note>
+The agent only references data it receives in its context. If it says it doesn't know something, it genuinely doesn't have that data available.
+</Note>
+
+## How to Switch Chat Models
+
+Tap any model pill in the **chat header** to switch the model powering your conversation. The switch takes effect immediately on your next message.
+
+| Model | Cost | Best For |
+|---|---|---|
+| Grok Fast | 15 cr/msg | Quick lookups, simple questions |
+| Grok 4.3 | 30 cr/msg | Strategy analysis, deeper questions |
+| Claude Sonnet | 45 cr/msg | Nuanced review, complex reasoning |
+| Claude Opus | 120 cr/msg | Deep portfolio analysis, major strategy reviews |
+
+Your selection is saved across sessions. Start cheap for quick questions; step up when you want a serious review.
