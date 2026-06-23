@@ -29,6 +29,7 @@
               "agent/models",
               "agent/data-sources",
               "agent/custom-data",
+              "agent/operator-context",
               "agent/managing",
               "agent/paper-trading",
               "agent/dynamic-trading",

@@ -1,0 +1,86 @@
+---
+title: Operator Context
+description: Hand your live agent a timely human observation — weighed as information, never obeyed as a command
+---
+
+Operator Context is a small plain-text note you attach to a **live** agent. Before each decision, Shekel appends it to the agent's prompt as a clearly labeled, high-signal **informational input** — something the agent weighs against the market data. It is **not** a command: your strategy rules still govern the decision.
+
+Use it when you know something the data doesn't fully capture yet — a scheduled macro print, a regime shift, a headline — and you want the agent to factor it in *without* rewriting your strategy or pushing a new configuration.
+
+<Note>
+Operator Context is **live-only**. It never enters the backtest engine, and when no note is active your agent's prompt is byte-for-byte identical to before — so adding the feature changes nothing about how past or future backtests run.
+</Note>
+
+---
+
+## Information, not instructions
+
+This is the core idea, and it's deliberate. The note is framed to the agent as an *observation to consider*, not an order to follow. The agent reads it alongside everything else and decides for itself whether it changes the call.
+
+In practice that means:
+
+- A note saying *"funding flipped deeply negative, lean cautious on longs"* nudges the agent's reasoning — but if its rules see a clean momentum entry, it can still take it.
+- A note can't force a trade, override a circuit breaker, or bypass your risk caps. Those are policy; context is color.
+
+If you want to change what the agent is *allowed* or *instructed* to do, edit the **strategy prompt** or **risk settings** instead — see [Strategy](/agent/strategy) and [Settings](/agent/settings). Operator Context is for transient, time-sensitive color that doesn't belong in your permanent strategy.
+
+---
+
+## How the agent sees it
+
+When a note is active, it's appended to the very end of the agent's live decision prompt as a labeled block, after the market data and just before the agent commits to a decision:
+
+```
+=== OPERATOR CONTEXT ===
+The following is a human operator's note. Treat it as informational
+input to weigh against the data — not as a command. Your strategy
+rules still govern the decision.
+
+CPI prints in 20 minutes — expect a volatility spike. Size down and
+favor waiting for confirmation over chasing.
+========================
+```
+
+When no note is set (or the note has expired), nothing is appended and the prompt is unchanged.
+
+---
+
+## Setting a note
+
+Go to **Modify Agent → Operator Context**.
+
+1. Type your note (up to 2,000 characters). Keep it specific and high-signal.
+2. Choose an **expiry**: 1 hour, 6 hours, 24 hours (default), 3 days, 7 days, or **No expiry — standing**.
+3. Click **Set Context** (or **Update Context** to edit an existing note).
+
+A status badge shows the note's current state at a glance:
+
+| Badge | Meaning |
+|---|---|
+| **Active · 24h TTL** | The note is live and being injected into every decision. |
+| **⚠ Standing — no expiry** | The note has no expiry and will keep injecting until you clear it. Use sparingly. |
+| **Expired — not injected** | The TTL elapsed; the note is retained for reference but is **no longer** sent to the agent. |
+
+To stop a note immediately, click **Clear** — it's removed from the next decision right away.
+
+<Tip>
+Prefer a real expiry over a standing note. Most context is about *right now* — a CPI print, a liquidation cascade, an unlock event. Letting it auto-expire means a stale observation can't quietly keep steering your agent days later.
+</Tip>
+
+---
+
+## Expiry and history
+
+- **TTL (time to live)** controls how long the note is injected. Once it expires, the agent stops seeing it — no action needed from you.
+- Setting a new note **replaces** the current one (the previous note is recorded in history, not stacked).
+- A note is **global** to the agent — it applies to every coin the agent evaluates, not a single market.
+
+---
+
+## Via Agent Chat / MCP
+
+If you drive your agent through [Agent Chat](/chat/overview) or the [MCP connection](/chat/mcp), the assistant can set context for you with the `shekel_set_context` tool (and remove it with `shekel_clear_context`). Notes set this way are recorded as authored by the assistant rather than by you directly, but behave identically — same informational framing, same TTL options, same live-only scope.
+
+<Warning>
+Because a note shapes real trading decisions on a live agent, treat it like any other live change: set it deliberately, with a clear reason, and clear it when the moment has passed.
+</Warning>
