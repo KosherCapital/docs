@@ -1,0 +1,68 @@
+---
+title: Obstacle Course
+description: Stress-test a strategy prompt in minutes — a PASS/WEAK/FAIL verdict on how it behaves in the market moments that matter
+---
+
+The Obstacle Course is the fast first gate for any strategy-prompt change. Instead of simulating a full price path like a [backtest](/backtesting/overview), it replays your prompt against a curated battery of frozen market **stations** — trend tops, parabolic pullbacks, short squeezes, choppy ranges, trend refuels — and grades the decision your prompt produces in each one.
+
+It answers one question: **does this wording produce the right *actions* in the moments that matter, consistently?** — in a few minutes instead of hours.
+
+<Note>
+Use it as the first step of the testing loop: **Obstacle Course (minutes) → a short backtest → a full backtest.** If the course says FAIL, fix the prompt before you spend a backtest on it.
+</Note>
+
+---
+
+## Running it
+
+1. Open **Obstacle Course** in the app.
+2. The strategy prompt and notes from your current agent are prefilled — edit them freely, or paste any prompt. Only the prompt is tested.
+3. Pick a **decision model**. The cost updates with the model — that's the only thing that changes the price.
+4. Click **Run Obstacle Course**. Results are ready in ~3–10 minutes.
+
+<Warning>
+The course only ever replays its own curated snapshots. It never touches your live whitelist or your funds, and it never places a trade.
+</Warning>
+
+---
+
+## Reading the report
+
+### Verdict — the gate
+
+| Verdict | Meaning |
+|---|---|
+| **PASS** | Clears every critical situation, consistently. |
+| **WEAK** | Too many sub-optimal decisions, or inconsistent behavior in a critical situation. |
+| **FAIL** | Took a forbidden action in a critical situation — e.g. failed to protect a large winner at a trend top. |
+
+The **verdict is the gate.** There's also a 0–100 **course score**, but it's a *trend metric only* — never compare two prompts by subtracting scores. Compare them cell-by-cell.
+
+### Cell matrix
+
+A heatmap of every **station × position-context** (for example `top / winner`). Each cell shows pass/miss/fail counts, a consistency bar, and the full mix of actions your prompt chose — *"WAIT 2 of 6 at the top"* is exactly the kind of intel you're looking for. Click any cell to drill in.
+
+### Decision drill
+
+Click any graded decision to read the **full reasoning**, the raw model response, and the exact frozen market state the model was shown — no re-running required.
+
+---
+
+## Cost
+
+Each run is charged a flat, **model-aware** credit fee, shown before you launch:
+
+- A cheaper model is a cheaper run.
+- The test battery itself is fixed, so **nothing other than the model changes the price**.
+- The fee is charged at launch and **refunded automatically** if the engine can't start the run.
+- You can have **one run in progress at a time**.
+
+<Tip>
+Iterating on a prompt? Start on a fast, cheap model to find obvious failures, then confirm your final wording on the model you actually trade with.
+</Tip>
+
+---
+
+## From chat / MCP
+
+You can also run the course from [Agent Chat](/chat/overview) or the [MCP connection](/chat/mcp) with the `shekel_run_obstacle_course` tool, and read results with `shekel_obstacle_course_report` — same verdict, cell matrix, and per-decision drill.

@@ -47,7 +47,7 @@
           },
           {
             "group": "Backtesting",
-            "pages": ["backtesting/overview", "backtesting/results"]
+            "pages": ["backtesting/overview", "backtesting/obstacle-course", "backtesting/results"]
           },
           {
             "group": "Credits & Token",
