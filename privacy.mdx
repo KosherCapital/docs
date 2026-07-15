@@ -3,19 +3,23 @@ title: Privacy & Security
 description: How Shekel protects your funds, strategy, and data
 ---
 
-## Your Funds Are Non-Custodial
+## Your Funds
 
-Shekel never holds or custodies your money. All capital stays in your Hyperliquid account. You fund Hyperliquid directly and Shekel trades on your behalf using a **trade-only API key**.
+Every agent trades from **its own Hyperliquid account**, created for you when you launch it. You fund that account by sending USDC on Arbitrum to the agent's deposit address; Shekel bridges it into Hyperliquid automatically. You cannot attach a pre-existing Hyperliquid account to an agent.
 
-A trade-only Hyperliquid API key can place and cancel orders. It cannot withdraw funds. Even in a worst-case scenario where Shekel's backend were completely compromised, an attacker with your API key could not move funds out of your Hyperliquid account.
+Each agent has two separate keys:
 
-<Tip>
-When generating your Hyperliquid API key, always select trade-only permissions — never withdrawal permissions.
-</Tip>
+- **Trading key (trade-only)** — what the agent uses to place and cancel orders. It **cannot** withdraw funds. This is the key the AI's decisions flow through, so an agent can never move money out, no matter what it decides.
+- **Account key** — the Hyperliquid account's owner key. Shekel holds it encrypted and uses it only for actions you initiate or authorize: bridging in your deposits, withdrawals you request in the app, and the one-time Hyperliquid approvals an agent needs before it can trade.
 
-## API Key Encryption
+## You Can Take Control at Any Time
 
-Your Hyperliquid API key is encrypted with AES-256 before being stored. The encryption key is stored separately from the database. Shekel engineers cannot read your API key.
+- **Withdraw** — send USDC to any Arbitrum address from **Account → Withdraw**.
+- **Export the account key** — **Account → Retrieve Private Key** hands you the account's private key after a step-up security check. With it you control the account directly on Hyperliquid, independent of Shekel.
+
+## Key Encryption
+
+Both keys are encrypted with AES-256 before being stored, and the encryption key is held separately from the database.
 
 ## Private AI Inference
 

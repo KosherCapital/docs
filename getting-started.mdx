@@ -28,34 +28,32 @@ description: From download to live agent in under 10 minutes
     This is required only if you want to stake SHEKEL tokens for ongoing credit rewards. It is not required to run an agent.
   </Step>
 
-  <Step title="Fund Your Hyperliquid Account">
-    Shekel trades using funds you hold directly in your own Hyperliquid account. Shekel never holds or custodies your funds.
-
-    1. Go to [app.hyperliquid.xyz](https://app.hyperliquid.xyz)
-    2. Deposit USDC to your account
-    3. The minimum recommended starting balance is **$100 USDC**
-
-    <Tip>You can run backtests without funding — a live account is only needed to deploy an agent.</Tip>
-  </Step>
-
-  <Step title="Generate a Hyperliquid API Key">
-    1. Go to [app.hyperliquid.xyz](https://app.hyperliquid.xyz) → **API Keys**
-    2. Create a new key with **trade-only** permissions (not withdrawal)
-    3. Copy the key — you'll need it in the next step
-
-    <Warning>Never give Shekel a key with withdrawal permissions. A trade-only key is all that's needed and keeps your funds safe even in a worst-case scenario.</Warning>
-  </Step>
-
   <Step title="Launch Your Agent">
     Tap **Launch Agent** in the app.
 
-    - Paste your Hyperliquid API key
     - Write your [strategy prompt](/agent/strategy) (or use the Quick Launch default to get started)
     - Set your [risk parameters](/agent/settings)
     - Choose your [AI model](/agent/models)
     - Tap **Launch**
 
-    Your agent will begin running on its first scheduled interval.
+    Launching **creates a brand-new Hyperliquid account dedicated to this agent**. You don't need a Hyperliquid account beforehand, and you don't create any API keys yourself — Shekel generates the account and its trade-only trading key for you, as part of the launch.
+
+    <Note>You cannot attach an existing Hyperliquid account to an agent. Each agent trades from its own Hyperliquid account, created at launch. This is what lets the agent trade autonomously without you signing every order.</Note>
+  </Step>
+
+  <Step title="Fund Your Agent's Hyperliquid Account">
+    Your new agent has its own **deposit address**, shown on the dashboard.
+
+    1. In the app, copy the agent's **Deposit Address (Arbitrum · USDC)**
+    2. Send **USDC on Arbitrum** to that address
+    3. Shekel auto-bridges it into the agent's Hyperliquid account (usually ~60 seconds)
+    4. The minimum recommended starting balance is **$100 USDC**
+
+    Your agent starts trading on its first scheduled interval once the deposit confirms.
+
+    <Tip>You can run backtests without funding anything — a funded account is only needed to trade live.</Tip>
+
+    <Note>The account is yours. You can withdraw to any Arbitrum address from **Account → Withdraw** at any time, and you can export the account's private key (**Account → Retrieve Private Key**, protected by a step-up security check) to take sole control of it outside Shekel.</Note>
   </Step>
 </Steps>
 

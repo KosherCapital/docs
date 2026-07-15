@@ -5,7 +5,7 @@ description: AI-powered crypto trading agents on Hyperliquid
 
 Shekel lets you deploy an AI trading agent that monitors the crypto market and executes trades on your behalf on [Hyperliquid](https://app.hyperliquid.xyz) — the highest-performance decentralized perpetuals exchange.
 
-You write a plain-English strategy. The agent reads live market data, runs it through an AI model of your choice, and places trades automatically on your Hyperliquid account. You stay in control: set risk limits, choose which tokens to trade, and pause or stop at any time.
+You write a plain-English strategy. The agent reads live market data, runs it through an AI model of your choice, and places trades automatically. Launching an agent **creates a dedicated Hyperliquid account for it** — you fund that account, and you can withdraw from it or export its private key at any time. You stay in control: set risk limits, choose which tokens to trade, and pause or stop at any time.
 
 <CardGroup cols={2}>
   <Card title="Launch Your First Agent" icon="rocket" href="/getting-started">
@@ -35,7 +35,7 @@ You write a plain-English strategy. The agent reads live market data, runs it th
     The context is passed to your chosen AI model (Claude, Grok, DeepSeek, or others). The model reasons through your strategy and outputs a structured decision: LONG, SHORT, CLOSE, or WAIT — with full reasoning.
   </Step>
   <Step title="The trade executes">
-    If the decision is actionable, Shekel places the order on Hyperliquid via your API key. Your funds never leave your account — Shekel only has trade authority, never withdrawal access.
+    If the decision is actionable, Shekel places the order on your agent's Hyperliquid account using that agent's **trade-only** trading key — it can open and close positions, but cannot withdraw.
   </Step>
 </Steps>
 
@@ -46,7 +46,7 @@ You write a plain-English strategy. The agent reads live market data, runs it th
 - **Backtest engine** — simulate any strategy against historical Hyperliquid data, with LLM-driven decision making
 - **Custom data endpoints** — inject any external signal, on-chain metric, or proprietary indicator into your agent's context
 - **SHEKEL token** — stake SHEKEL on Base to earn passive daily credits
-- **Non-custodial** — your funds stay in your Hyperliquid account; you can revoke the API key at any time
+- **Your account, your keys** — each agent trades from its own Hyperliquid account, created at launch; withdraw to any Arbitrum address at any time, or export the account's private key to take sole control of it
 
 <Note>
 All AI inference runs through [Venice AI](https://venice.ai), providing private, uncensored model access. Your strategy, prompts, and trade data are never used to train AI models.
