@@ -5,7 +5,29 @@ description: How Shekel protects your funds, strategy, and data
 
 ## Your Funds
 
-Every agent trades from **its own Hyperliquid account**, created for you when you launch it. You fund that account by sending USDC on Arbitrum to the agent's deposit address; Shekel bridges it into Hyperliquid automatically. You cannot attach a pre-existing Hyperliquid account to an agent.
+Every agent trades from **its own Hyperliquid account**, created for you when you launch it. You fund that account by sending USDC to the agent's deposit address; Shekel bridges it into Hyperliquid automatically. You cannot attach a pre-existing Hyperliquid account to an agent.
+
+### Why Shekel creates the account
+
+Three reasons, and they're worth understanding:
+
+1. **One-click launch.** Creating a Hyperliquid account, funding it, and wiring up trading access is a multi-step, error-prone process. Shekel does all of it atomically when you launch — your agent is trade-ready the moment its deposit confirms.
+2. **The agent can be structurally sandboxed.** Because Shekel provisions the account, it hands the AI a *trade-only* key from day one (details below). An account you brought yourself couldn't be locked down this way without handing Shekel its owner key — which would be strictly worse for you.
+3. **Honest economics.** Launching and holding an agent is free because Shekel earns a small builder fee on each fill — the standard Hyperliquid mechanism, applied per-trade and visible on-chain. No deposit fees, no withdrawal fees, no cut of your balance. Shekel only earns when your agent actually trades.
+
+### Where your deposit goes
+
+Your deposit takes an automated journey, and **every hop lands at your own agent's address**:
+
+1. You send USDC to your agent's deposit address.
+2. Within about a minute, Shekel's bridge sweeps it onward automatically — cross-chain if needed, then into Hyperliquid's official bridge contract.
+3. The USDC arrives in your agent's Hyperliquid account, where it shows on your dashboard as withdrawable balance.
+
+<Note>
+If you watch the deposit address on a block explorer, you'll see funds arrive and then leave again almost immediately. **That's the automatic bridge, not a withdrawal** — follow the transaction and it ends at your agent's own Hyperliquid account. You can verify independently anytime by searching your agent's wallet address on a Hyperliquid explorer such as hypurrscan.io.
+</Note>
+
+### The two-key model
 
 Each agent has two separate keys:
 
@@ -14,8 +36,10 @@ Each agent has two separate keys:
 
 ## You Can Take Control at Any Time
 
-- **Withdraw** — send USDC to any Arbitrum address from **Account → Withdraw**.
-- **Export the account key** — **Account → Retrieve Private Key** hands you the account's private key after a step-up security check. With it you control the account directly on Hyperliquid, independent of Shekel.
+You are never locked in. Shekel's custody is custody-on-demand — two exit hatches are always open:
+
+- **Withdraw** — send USDC to any Arbitrum address from **Account → Withdraw**. The AI cannot block, delay, or intercept a withdrawal you request.
+- **Export the account key** — **Settings → Export Wallet** hands you the account's private key after a step-up security check (a wallet signature or SMS code). With it you control the account directly on Hyperliquid, independent of Shekel, permanently.
 
 ## Key Encryption
 
